@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.hbq969.code.dict.dao.DictDao">
+    <update id="createDictBase">
+        create table h_dict_base
+        (
+            dict_name varchar2 (200) primary key,
+            dict_desc varchar2 (200) not null,
+            dict_source varchar2 (20) default 'fix' comment 'fix: 固定枚举, sql: 使用表枚举',
+            key_column varchar2 (10) default 'key' comment '字典枚举key取值类型, 支持key、val',
+            val_column varchar2 (10) default 'val' comment '字典枚举key取值类型, 支持key、val'
+        )
+    </update>
+
+    <update id="createDictPairs">
+        create table h_dict_pairs
+        (
+            dict_name varchar2 (200),
+            pair_key varchar2 (255),
+            pair_value varchar2 (255),
+            primary key (dict_name, pair_key)
+        )
+    </update>
+
+    <update id="createDictSql">
+        create table h_dict_pairs
+        (
+            dict_name varchar2 (200) primary key,
+            sql_content varchar2 (500) comment '枚举字典的sql语句'
+        )
+    </update>
+
+    <update id="createDictSqlCounty">
+        create table h_dict_sql_county
+        (
+            c_key  varchar2(50) primary key,
+            c_name varchar2(50) not null
+        )
+    </update>
+</mapper>

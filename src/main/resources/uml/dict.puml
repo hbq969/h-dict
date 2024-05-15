@@ -1,0 +1,62 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Dict{
+-String dictName
+-String dictDesc;
+-Integer dictType;
+-Integer dictNum;
+-String keyColumn;
+-String valColumn;
+}
+
+class Pair{
+-String key;
+-String value;
+}
+
+class FixDict extends Dict
+
+class SqlDict extends Dict{
+-String sqlContent
+}
+
+interface DictHelper<T>{
++Set<Dict> allDicts()
++Optional<Dict> queryDict(String dictName)
++boolean isDict(String dictName)
++boolean isDictKey(String dictName,String key)
++String queryValue(String dictName,String key)
++Map<String,String> queryPairs(String dictName)
++void reloadImmediately()
++void tranForDict(T data,String dictName)
+
+}
+
+class MapDictHelperImpl<Map> implements DictHelper{
+-DictManage manage
++void tranForDict(Map data,String dictName)
+}
+
+class ListDictHelperImpl<List> implements DictHelper{
+-MapDictImpl mapDict
++void tranForDict(List data,String dictName)
+}
+
+interface DictManage{
++void dictInit()
++void addPair(String dictName,Pair pair)
++void addPairs(String dictName,List<Pair> pairs)
++void deletePair(String dictName,String pairKey)
++void deletePairs(String dictName,List<String> pairKeys)
++void addDict(Dict dict)
++void deleteDict(String dn)
++void updateDict(Dict dict)
+}
+
+class FixDictManageImpl implements DictManage
+class SqlDictManageImpl implements DictManage
+MapDictHelperImpl <-- DictManage
+
+
+@enduml
