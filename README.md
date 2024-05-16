@@ -86,13 +86,15 @@ http://ip:port/[${server.servlet.context-path}]/ui-dict/index.html
 
 2. 新增字典
 
-<img src="src/main/resources/readme/2.png" align="left"/>
+![](src/main/resources/readme/2.png)
 
+
+![](src/main/resources/readme/3.png)
 
 
 3. 新增固定枚举值
 
-<img src="src/main/resources/readme/4.png" align="left"/>
+![](src/main/resources/readme/4.png)
 
 
 
@@ -100,7 +102,7 @@ http://ip:port/[${server.servlet.context-path}]/ui-dict/index.html
 
 - api接口说明
 
-<img src="src/main/resources/readme/5.png" align="center"/>  
+![](src/main/resources/readme/6.png)
 
 
 
