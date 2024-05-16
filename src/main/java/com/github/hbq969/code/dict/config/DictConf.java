@@ -23,6 +23,11 @@ public class DictConf {
     private String dictToken = "hbq969@gmail.com";
 
     /**
+     * 转义map时，转义后key前缀
+     */
+    private String mapKeyPrefix = "fmt";
+
+    /**
      * 重载配置
      */
     private ReloadConf reload;

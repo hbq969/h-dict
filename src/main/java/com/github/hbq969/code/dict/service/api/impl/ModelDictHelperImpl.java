@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -59,16 +60,16 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
     }
 
     @Override
-    public void tranForDict(DictModel data, String dictName) {
+    public void tranForDict(DictModel data) {
         Class<?> clz = data.getClass();
         Field[] fs = clz.getDeclaredFields();
         for (Field f : fs) {
             if (f.isAnnotationPresent(Td.class)) {
                 Td td = f.getAnnotation(Td.class);
-                if (td.enable()) {
+                if (td.enable() && isDict(f.getName())) {
                     try {
                         f.setAccessible(true);
-                        String value = queryValue(dictName, String.valueOf(f.get(data)));
+                        String value = queryValue(f.getName(), String.valueOf(f.get(data)));
                         String fmtFd = td.fmtFieldName();
                         Field fmtF = clz.getDeclaredField(fmtFd);
                         fmtF.setAccessible(true);
@@ -79,5 +80,15 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
                 }
             }
         }
+    }
+
+    @Override
+    public void tranForDict(DictModel data, List<String> fs) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void tranForDict(DictModel data, String... fs) {
+        throw new UnsupportedOperationException();
     }
 }

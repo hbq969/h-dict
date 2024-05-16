@@ -330,7 +330,7 @@ const delPair = (scope: any) => {
           <el-input v-model="dictInfo.dictDesc" type="text"/>
         </el-form-item>
         <el-form-item label="字典来源：" style="width: 40%">
-          <el-select v-model="dictInfo.dictSource" class="m-2">
+          <el-select v-model="dictInfo.dictSource" class="m-2" :disabled="dictInfo.disabled">
             <el-option label="固定枚举" value="1"/>
             <el-option label="数据表枚举" value="2"/>
           </el-select>

@@ -61,7 +61,11 @@ spring:
 # 开启字典管理
 dict:
   enabled: true
-  dictToken: 字典api访问授权码
+  # dic控制台接口访问token头
+  dictToken: hbq969@gmail.com
+  # map转义时转义后字段的前缀
+  map-key-prefix: hbq
+  # 缓存字典数据重载周期
   reload:
     cron: 0,30 * * * * *
 ```
@@ -97,25 +101,41 @@ http://ip:port/[${server.servlet.context-path}]/ui-dict/index.html
 - api接口说明
 
 <img src="src/main/resources/readme/5.png" align="center"/>  
-  
 
 
 
 
-  
+
+
 - 针对map转义
+
+```yaml
+# 开启字典管理
+dict:
+  enabled: true
+  # map转义时转义后字段的前缀
+  map-key-prefix: fmt
+```
 
 ```java
 import com.github.hbq969.code.dict.service.api.impl.MapDictHelperImpl;
 
 @Autowired
-private MapDictHelperImpl dic;
+private MapDictHelperImpl mapDic;
+
+@Autowired
+private ListMapDictHelperImpl listDic;
 ```
 
 ```java
 Map<String,Object> map = new HashMap<>();
 map.put('region','suzhou');
-dic.tranForDict(map,'region');
+mapDic.tranForDict(map);
+
+List<Map> list = new ArrayList<>();
+list.add(map);
+listDic.tranForDict(list);
+
 // 转义后map
 {'region':'suzhou','fmtRegion':'苏州'}
 ```
@@ -130,7 +150,10 @@ dic.tranForDict(map,'region');
 import com.github.hbq969.code.dict.service.api.impl.ModelDictHelperImpl;
 
 @Autowired
-private ModelDictHelperImpl dic;
+private ModelDictHelperImpl modelDic;
+
+@Autowired
+private ListModelDictHelperImpl listDic;
 ```
 
 ```java
@@ -143,7 +166,12 @@ Class Foo{
 
 Foo foo = new Foo();
 foo.setRegion('suzhou');
-dic.tranForDict(foo,'region');
+modelDic.tranForDict(foo);
+
+List<Foo> list = new ArrayList<>();
+list.add(foo);
+listDic.tranForDict(list);
+
 // 转义后
 foo.getFmtRegion()=> '苏州'
 ```

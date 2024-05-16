@@ -1,13 +1,16 @@
 package com.github.hbq969.code.dict.service.api.impl;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.common.utils.SqlUtils;
+import com.github.hbq969.code.dict.config.DictConf;
 import com.github.hbq969.code.dict.dao.DictDao;
 import com.github.hbq969.code.dict.model.Dict;
-import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.service.api.DictHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
 
-    private volatile Map<String, Map<String, Pair>> pairsMap = new HashMap<>(2 << 8);
+    private volatile Map<String, Map<String, String>> pairsMap = new HashMap<>(2 << 8);
 
     private volatile Map<String, Dict> dictMap = new HashMap<>(2 << 6);
 
@@ -32,9 +35,12 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
 
     private DictDao dictDao;
 
+    private DictConf conf;
+
     public MapDictHelperImpl(SpringContext context) {
         this.jt = context.getBean(JdbcTemplate.class);
         this.dictDao = context.getBean("h-dict-DictDao", DictDao.class);
+        this.conf = context.getBean(DictConf.class);
     }
 
     @Override
@@ -93,17 +99,16 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
 
     @Override
     public String queryValue(String dictName, String key) {
-        Map<String, Pair> pm = this.pairsMap.get(dictName);
+        Map<String, String> pm = this.pairsMap.get(dictName);
         if (pm == null) {
             return null;
         }
-        Pair pair = pm.get(key);
-        return pair == null ? null : pair.getValue();
+        return pm.get(key);
     }
 
     @Override
     public Map<String, String> queryPairs(String dictName) {
-        return queryPairs(dictName);
+        return this.pairsMap.get(dictName);
     }
 
     @Scheduled(cron = "${dict.reload.cron:0,30 * * * * *}")
@@ -123,17 +128,17 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
             this.dictMap = dictTmpMap;
             log.info("重载字典基本信息数据: {} 个", this.dictMap.size());
 
-            Map<String, Map<String, Pair>> pairsTmpMap = new HashMap<>(2 << 8);
+            Map<String, Map<String, String>> pairsTmpMap = new HashMap<>(2 << 8);
             dictDao.queryFixDictPairs().forEach(m -> {
                 String dn = MapUtils.getString(m, "dn");
                 String key = MapUtils.getString(m, "key");
                 String val = MapUtils.getString(m, "value");
-                Map<String, Pair> pm = pairsTmpMap.get(dn);
+                Map<String, String> pm = pairsTmpMap.get(dn);
                 if (pm == null) {
                     pm = new HashMap<>(16);
                     pairsTmpMap.put(dn, pm);
                 }
-                pm.put(key, new Pair(key, val));
+                pm.put(key, val);
             });
 
             dictDao.querySqlDicts().forEach(sd -> {
@@ -142,12 +147,12 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
                         String dn = sd.getDictName();
                         String key = MapUtils.getString(m, "key");
                         String val = MapUtils.getString(m, "value");
-                        Map<String, Pair> pm = pairsTmpMap.get(dn);
+                        Map<String, String> pm = pairsTmpMap.get(dn);
                         if (pm == null) {
                             pm = new HashMap<>(16);
                             pairsTmpMap.put(dn, pm);
                         }
-                        pm.put(key, new Pair(key, val));
+                        pm.put(key, val);
                     });
                 } catch (Exception e) {
                     log.error("查询字典: {} 的枚举数据时异常, 可能是sql格式不对（必须是两列）: {}", sd.getDictName(), sd.getSqlContent());
@@ -162,11 +167,52 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
     }
 
     @Override
-    public void tranForDict(Map data, String dictName) {
+    public void tranForDict(Map data) {
         Set<String> ks = data.keySet();
-        ks.forEach(k -> {
-            String v = MapUtils.getString(data, k);
-            data.put(k, queryValue(dictName, v));
+        ks.forEach(dn -> {
+            if (isDict(dn)) {
+                String pairKey = MapUtils.getString(data, dn);
+                data.put(
+                        String.join("", conf.getMapKeyPrefix(), StringUtils.capitalize(dn)),
+                        queryValue(dn, pairKey)
+                );
+            }
         });
+    }
+
+    @Override
+    public void tranForDict(Map data, List<String> fs) {
+        if (CollectionUtils.isNotEmpty(fs)) {
+            try {
+                fs.forEach(dn -> {
+                    if (isDict(dn)) {
+                        data.put(
+                                String.join("", conf.getMapKeyPrefix(), StringUtils.capitalize(dn)),
+                                queryValue(dn, MapUtils.getString(data, dn))
+                        );
+                    }
+                });
+            } catch (Exception e) {
+                // DO nothing
+            }
+        }
+    }
+
+    @Override
+    public void tranForDict(Map data, String... fs) {
+        if (ArrayUtil.isNotEmpty(fs)) {
+            for (String dn : fs) {
+                try {
+                    if (isDict(dn)) {
+                        data.put(
+                                String.join("", conf.getMapKeyPrefix(), StringUtils.capitalize(dn)),
+                                queryValue(dn, MapUtils.getString(data, dn))
+                        );
+                    }
+                } catch (Exception e) {
+                    // DO nothing
+                }
+            }
+        }
     }
 }

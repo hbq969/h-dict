@@ -1,10 +1,7 @@
 package com.github.hbq969.code.dict.config;
 
 import com.github.hbq969.code.common.spring.context.SpringContext;
-import com.github.hbq969.code.dict.service.api.impl.DictServiceImpl;
-import com.github.hbq969.code.dict.service.api.impl.ListDictHelperImpl;
-import com.github.hbq969.code.dict.service.api.impl.MapDictHelperImpl;
-import com.github.hbq969.code.dict.service.api.impl.ModelDictHelperImpl;
+import com.github.hbq969.code.dict.service.api.impl.*;
 import com.github.hbq969.code.dict.service.spi.impl.DictManageFacade;
 import com.github.hbq969.code.dict.service.spi.impl.FixDictManageImpl;
 import com.github.hbq969.code.dict.service.spi.impl.SqlDictManageImpl;
@@ -55,14 +52,20 @@ public class DictConfig {
 
     @ConditionalOnExpression("${dict.enabled:false}")
     @Bean("h-dict-ListDictHelper")
-    ListDictHelperImpl listDictHelper() {
-        return new ListDictHelperImpl(context);
+    ListMapDictHelperImpl listDictHelper() {
+        return new ListMapDictHelperImpl(context);
     }
 
     @ConditionalOnExpression("${dict.enabled:false}")
     @Bean("h-dict-ModelDictHelper")
     ModelDictHelperImpl modelDictHelper() {
         return new ModelDictHelperImpl();
+    }
+
+    @ConditionalOnExpression("${dict.enabled:false}")
+    @Bean("h-dict-ListModelDictHelper")
+    ListModelDictHelperImpl listModelDictHelper() {
+        return new ListModelDictHelperImpl(context);
     }
 
     @ConditionalOnExpression("${dict.enabled:false}")

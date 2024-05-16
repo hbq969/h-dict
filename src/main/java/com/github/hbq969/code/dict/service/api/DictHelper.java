@@ -3,6 +3,7 @@ package com.github.hbq969.code.dict.service.api;
 import com.github.hbq969.code.dict.model.Dict;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,5 +27,9 @@ public interface DictHelper<T> {
 
     void reloadImmediately();
 
-    void tranForDict(T data, String dictName);
+    void tranForDict(T data);
+
+    void tranForDict(T data, List<String> fs);
+
+    void tranForDict(T data, String... fs);
 }
