@@ -27,7 +27,7 @@ spring:
       base-packages: com.github.hbq969
       default-lookup-key: hikari
     hikari:
-      jdbc-url: npm
+      jdbc-url: jdbc:h2:~/h2/hbq969/h-dict
       driver-class-name: org.h2.Driver
       username: foo
       password: ENC(2HRE3Jhuz6IfiD8L7orn4flpXNPTWLhH4u6lH/i0SWf8jXh3tNGQG++plhHmJN3F)
