@@ -121,19 +121,11 @@ swagger:
 
 # 数据字典管理
 dict:
-  enable: false
-  dialect: embedded
-  db:
-    jdbc-url: ${spring.datasource.hikari.jdbc-url}
-    driver-class-name: ${spring.datasource.hikari.driver-class-name}
-    username: ${spring.datasource.hikari.username}
-    password: ${spring.datasource.hikari.password}
-    maximum-pool-size: 10
-    minimum-idle: 2
-    idle-timeout: 600000
-    max-lifetime: 800000
-    connection-test-query: SELECT 1
   enabled: true
+  dict-token: hbq969@gmail.com
+  reload:
+    cron: 0,30 * * * * *
+  map-key-prefix: fmt
 
 # 分布式锁
 lock:
