@@ -43,8 +43,8 @@ mvn -U package install
 
 # mybatis配置
 mybatis:
-  # 数据库类型，支持 h2/mysql/oracle
-	dialog: h2
+  # 数据库类型，支持 embedded/mysql/oracle
+	dialog: embedded
 	# 追加一下内容（如果原有内容存在）
   mapper-locations: 
     - classpath*:**/mapper/common/*Mapper.xml
