@@ -81,8 +81,8 @@ knife4j:
 swagger:
   api-info:
     enable: true
-    title: safebox web应用防护Restful API
-    description: safebox web应用防护Restful API
+    title: web应用Restful API
+    description: web应用Restful API
     termsOfServiceUrl: http://127.0.0.1:${server.port}
     version: v1.0
     license: Apache LICENSE-2.0
