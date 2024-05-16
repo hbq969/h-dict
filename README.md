@@ -178,3 +178,29 @@ listDic.tranForDict(list);
 foo.getFmtRegion()=> '苏州'
 ```
 
+# 5.demo演示
+
+1. 使用maven模版创建一个SpringBoot工程
+
+```bash
+# 安装模版
+git clone https://github.com/hbq969/h-archetype.git
+cd h-archetype/target/generated-sources/archetype
+mvn install
+
+# 使用模版创建工程
+cd -
+mvn archetype:generate -DarchetypeGroupId=com.github.hbq969 -DarchetypeArtifactId=h-archetype -DarchetypeVersion=1.0-SNAPSHOT -DgroupId=com.github.hbq969 -Dversion=1.0-SNAPSHOT -DartifactId=h-example -Dpackage=com.github.hbq969 -Dproduct=code -Dmodule=example -DappPort=30000 -Dauthor=hbq969@gmail.com
+
+# 运行demo工程
+cd h-example
+mvn spring-boot:run
+```
+
+
+
+2. 访问Dashboard页面
+
+> http://localhost:30000/api/hbq/code/example/ui-dict/index.html
+
+​	这时你就可以管理这个应用的字典数据了，控制台添加、删除、更新字典数据都会被实时更新到应用缓存中，应用中在通过提供的api接口进行字典查询、转义等操作。
