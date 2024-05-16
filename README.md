@@ -88,7 +88,7 @@ http://ip:port/[${server.servlet.context-path}]/ui-dict/index.html
 
 3. 新增固定枚举值
 
-<img src="src/main/resources/readme/3.png" align="left"/>
+<img src="src/main/resources/readme/4.png" align="left"/>
 
 
 
@@ -96,7 +96,7 @@ http://ip:port/[${server.servlet.context-path}]/ui-dict/index.html
 
 - api接口说明
 
-<img src="src/main/resources/readme/4.png" align="center"/>  
+<img src="src/main/resources/readme/5.png" align="center"/>  
   
 
 

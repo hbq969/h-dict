@@ -51,10 +51,12 @@ const dictInfo = reactive({
   sqlContent: '',
   pairs: [],
   pairTotal: 0,
+  pairPageNum: 1,
+  pairPageSize: 5,
   init: function () {
     this.disabled = false
     this.dictName = ''
-    this.dictDesc=''
+    this.dictDesc = ''
     this.dictSource = ''
     this.dictSource = '1'
     this.keyColumn = 'key'
@@ -62,9 +64,11 @@ const dictInfo = reactive({
     this.sqlContent = ''
     this.pairs = []
     this.pairTotal = 0
+    this.pairPageNum = 1
+    this.pairPageSize = 5
   },
   valid: function () {
-    return(this.dictSource == '1' && this.dictName != '' && this.dictDesc != '')
+    return (this.dictSource == '1' && this.dictName != '' && this.dictDesc != '')
         || (this.dictSource == '2' && this.dictName != '' && this.dictDesc != '' && this.sqlContent != '')
   }
 })
@@ -132,7 +136,7 @@ const showEditDictDialog = (scope: any) => {
   dictInfo.keyColumn = scope.row.keyColumn;
   dictInfo.valColumn = scope.row.valColumn;
   if (scope.row.dictSource == '1') {
-    queryPairs(scope.row.dictName)
+    queryPairs()
   } else if (scope.row.dictSource == '2') {
     dictInfo.sqlContent = scope.row.sqlContent;
   }
@@ -176,9 +180,9 @@ const pairInfo = reactive({
   }
 })
 
-const queryPairs = (dictName: any) => {
+const queryPairs = () => {
   axios({
-    url: '/queryPairs?pageNum=' + dictInfo.pageNum + '&pageSize=' + dictInfo.pageSize + '&dictName=' + dictName,
+    url: '/queryPairs?pageNum=' + dictInfo.pairPageNum + '&pageSize=' + dictInfo.pairPageSize + '&dictName=' + dictInfo.dictName,
     method: 'get'
   }).then((res: any) => {
     if (res.data.state == 'OK') {
@@ -203,7 +207,7 @@ const addPair = () => {
     if (res.data.state == 'OK' && !res.data.body) {
       msg('字典基本信息不存在，请先添加', 'warning')
     } else {
-      if(dictInfo.valid()){
+      if (dictInfo.valid()) {
         axios({
           url: '/addPair',
           method: 'post',
@@ -214,13 +218,13 @@ const addPair = () => {
         }).then((res: any) => {
           if (res.data.state == 'OK') {
             msg('添加成功', 'success')
-            queryPairs(dictInfo.dictName)
+            queryPairs()
           }
         }).catch((err: Error) => {
           msg('请求异常', 'error')
         })
-      }else{
-        msg('参数不对，请检查','error');
+      } else {
+        msg('参数不对，请检查', 'error');
       }
     }
   }).catch((err: Error) => {
@@ -243,7 +247,7 @@ const delPair = (scope: any) => {
   }).then((res: any) => {
     if (res.data.state == 'OK') {
       msg('删除成功', 'success')
-      queryPairs(dictInfo.dictName)
+      queryPairs()
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')
@@ -255,15 +259,16 @@ const delPair = (scope: any) => {
 
 <template>
   <div class="container">
-    <el-form :inline="true" class="demo-form-inline">
-      <el-form-item label="字典名称" prop="dictName">
+    <el-divider content-position="left">查询条件</el-divider>
+    <el-form class="demo-form-inline" :inline="true" size="small">
+      <el-form-item label="字典名称" prop="dictName" style="width: 20%">
         <el-input v-model="form.dictName" placeholder="请输入..." @keyup.enter="queryDicts"/>
       </el-form-item>
-      <el-form-item label="字典描述" prop="dictDesc">
+      <el-form-item label="字典描述" prop="dictDesc" style="width: 20%">
         <el-input v-model="form.dictDesc" placeholder="请输入..." @keyup.enter="queryDicts"/>
       </el-form-item>
-      <el-form-item label="来源类型" prop="dictSource">
-        <el-select v-model="form.dictSource" class="m-2" size="large">
+      <el-form-item label="来源类型" prop="dictSource" style="width: 20%">
+        <el-select v-model="form.dictSource" class="m-2">
           <el-option label="请选择" value="-1"/>
           <el-option label="固定枚举" value="1"/>
           <el-option label="数据表枚举" value="2"/>
@@ -275,11 +280,15 @@ const delPair = (scope: any) => {
         <el-button type="primary" :icon="Edit" circle @click="showAddDictDialog()" title="添加字典配置"/>
       </el-form-item>
     </el-form>
+
+    <el-divider content-position="left">字典列表</el-divider>
     <el-table :data="data.dictList" style="width: 100%" :border="true" table-layout="fixed" :stripe="true" size="small"
               :highlight-current-row="true" :header-cell-style="headerCellStyle">
       <el-table-column fixed="left" label="操作" width="180" header-align="center" align="center">
         <template #default="scope">
-          <el-button link type="primary" size="small" @click="showEditDictDialog(scope)" v-if="scope.row.dictName!='dict_source'">编辑</el-button>
+          <el-button link type="primary" size="small" @click="showEditDictDialog(scope)"
+                     v-if="scope.row.dictName!='dict_source'">编辑
+          </el-button>
           <el-popconfirm title="你确定要删除本条记录吗?" @confirm="delDict(scope)"
                          icon-color="red"
                          confirm-button-type="danger">
@@ -311,29 +320,29 @@ const delPair = (scope: any) => {
                    :small="true" :background="true"
                    :page-sizes="[5, 10, 20, 50, 100]"/>
 
-    <el-dialog v-model="dialogFormVisible" title="编辑属性" style="width:60%;height:800px">
-      <el-form :model="dictInfo">
+    <el-dialog v-model="dialogFormVisible" title="编辑属性" style="margin:2% 20%;width:50%;height:700px;">
+      <el-form :model="dictInfo" :label-width="formLabelWidth" label-position="right" size="small" inline>
         <el-divider content-position="left">基础信息</el-divider>
-        <el-form-item label="字典名称：" :label-width="formLabelWidth">
+        <el-form-item label="字典名称：" style="width: 40%">
           <el-input v-model="dictInfo.dictName" type="text" :disabled="dictInfo.disabled"/>
         </el-form-item>
-        <el-form-item label="字典描述：" :label-width="formLabelWidth">
+        <el-form-item label="字典描述：" style="width: 40%">
           <el-input v-model="dictInfo.dictDesc" type="text"/>
         </el-form-item>
-        <el-form-item label="字典来源：" :label-width="formLabelWidth">
-          <el-select v-model="dictInfo.dictSource" class="m-2" size="large" @change="selectDictSource">
+        <el-form-item label="字典来源：" style="width: 40%">
+          <el-select v-model="dictInfo.dictSource" class="m-2">
             <el-option label="固定枚举" value="1"/>
             <el-option label="数据表枚举" value="2"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Key取值类型：" :label-width="formLabelWidth">
-          <el-select v-model="dictInfo.keyColumn" class="m-2" size="large">
+        <el-form-item label="Key取值类型：" style="width: 40%">
+          <el-select v-model="dictInfo.keyColumn" class="m-2">
             <el-option label="Key" value="key"/>
             <el-option label="Value" value="value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Value取值类型：" :label-width="formLabelWidth">
-          <el-select v-model="dictInfo.valColumn" class="m-2" size="large">
+        <el-form-item label="Value取值类型：" style="width: 40%">
+          <el-select v-model="dictInfo.valColumn" class="m-2">
             <el-option label="Key" value="key"/>
             <el-option label="Value" value="value"/>
           </el-select>
@@ -359,25 +368,24 @@ const delPair = (scope: any) => {
                              align="center"/>
             <el-table-column prop="value" label="Value值" :show-overflow-tooltip="true" header-align="center"
                              align="center"/>
-            <el-pagination class="page" v-model:page-size="dictInfo.pageSize" v-model:current-page="dictInfo.pageNum"
-                           layout="->, total, sizes, prev, pager, next, jumper" v-model:total="dictInfo.pairTotal"
-                           @size-change="queryPairs"
-                           @current-change="queryPairs" @prev-click="queryDicts" @next-click="queryPairs"
-                           :small="true" :background="true"
-                           :page-sizes="[5, 10, 20, 50, 100]"/>
           </el-table>
+          <el-pagination class="page" v-model:page-size="dictInfo.pairPageSize" v-model:current-page="dictInfo.pairPageNum"
+                         layout="->, total, sizes, prev, pager, next, jumper" v-model:total="dictInfo.pairTotal"
+                         @size-change="queryPairs"
+                         @current-change="queryPairs" @prev-click="queryPairs" @next-click="queryPairs"
+                         :small="true" :background="true"
+                         :page-sizes="[5]"/>
           <div class="addBtn">
             <el-button :icon="Edit" size="small" round @click="showPairDialog">添加</el-button>
           </div>
         </div>
         <div v-else-if="dictInfo.dictSource==2">
-          <el-form-item label="Value取值类型：" :label-width="formLabelWidth">
+          <el-form-item label="枚举数据SQL：" :label-width="formLabelWidth" style="width: 85%">
             <el-input
                 v-model="dictInfo.sqlContent"
-                style="width: 100%"
                 :rows="5"
                 type="textarea"
-                placeholder="请输入枚举值查询的sql，第一列为key值，第二列为value值"
+                placeholder='请输入枚举值查询的sql，注意一定要带上key、value固定别名，比如 select c_key AS "key",c_name AS "value" from h_dict_sql_county'
             />
           </el-form-item>
         </div>
@@ -393,13 +401,13 @@ const delPair = (scope: any) => {
       </template>
     </el-dialog>
 
-    <el-dialog v-model="dialogPairFormVisible" title="添加枚举" style="width:40%;height:400px">
-      <el-form :model="pairInfo">
+    <el-dialog v-model="dialogPairFormVisible" title="添加枚举" style="margin:10% 25%;width:40%;height:350px">
+      <el-form :model="pairInfo" label-position="right" size="small">
         <el-divider content-position="left">枚举信息</el-divider>
-        <el-form-item label="Key值：" :label-width="formLabelWidth">
+        <el-form-item label="Key值：" :label-width="formLabelWidth" style="width: 80%">
           <el-input v-model="pairInfo.key" type="text"/>
         </el-form-item>
-        <el-form-item label="Value值：" :label-width="formLabelWidth">
+        <el-form-item label="Value值：" :label-width="formLabelWidth" style="width: 80%">
           <el-input v-model="pairInfo.value" type="text"/>
         </el-form-item>
       </el-form>
@@ -419,12 +427,14 @@ const delPair = (scope: any) => {
 <style scoped>
 .container {
   flex-grow: 1;
-  padding: 20px;
+  padding: 20px 15%;
   overflow: auto;
+  width: 60%;
+
 }
 
 .addBtn {
-  margin-top: 5px;
+  margin-top: 20px;
   text-align: center;
 }
 </style>

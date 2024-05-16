@@ -2,8 +2,10 @@ package com.github.hbq969.code.dict.control;
 
 import com.github.hbq969.code.common.restful.ICommonControl;
 import com.github.hbq969.code.common.restful.ReturnMessage;
+import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.dict.control.vo.DictPair;
 import com.github.hbq969.code.dict.control.vo.QueryDict;
+import com.github.hbq969.code.dict.control.vo.QueryTran;
 import com.github.hbq969.code.dict.model.Dict;
 import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.model.SqlDict;
@@ -14,10 +16,14 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author : hbq969@gmail.com
@@ -35,6 +41,9 @@ public class DictControl implements ICommonControl {
 
     @Autowired
     private MapDictHelperImpl mapDictHelper;
+
+    @Autowired
+    private JdbcTemplate jt;
 
     @ApiOperation("字典分页查询")
     @RequestMapping(path = "/queryDicts", method = RequestMethod.POST)
@@ -101,5 +110,12 @@ public class DictControl implements ICommonControl {
     @ResponseBody
     public ReturnMessage<Boolean> queryDict(@RequestParam(name = "dn") String dn) {
         return ReturnMessage.success(dictService.queryDict(dn));
+    }
+
+    @ApiOperation("测试字典转义")
+    @RequestMapping(path = "/dictTransCheck", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnMessage<?> dictTransCheck(@RequestBody QueryTran q) {
+        return ReturnMessage.success(mapDictHelper.queryValue(q.getDn(), q.getPairKey()));
     }
 }

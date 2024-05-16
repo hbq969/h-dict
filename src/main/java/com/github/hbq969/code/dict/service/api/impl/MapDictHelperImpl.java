@@ -139,7 +139,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
             dictDao.querySqlDicts().forEach(sd -> {
                 try {
                     dictDao.queryPairsWithSqlContent(sd.getSqlContent()).forEach(m -> {
-                        String dn = MapUtils.getString(m, "dn");
+                        String dn = sd.getDictName();
                         String key = MapUtils.getString(m, "key");
                         String val = MapUtils.getString(m, "value");
                         Map<String, Pair> pm = pairsTmpMap.get(dn);

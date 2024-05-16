@@ -230,3 +230,5 @@ dist
 .pnp.*
 
 .DS_Store
+
+src/main/resources/static/ui-dict/
