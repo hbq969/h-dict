@@ -1,6 +1,7 @@
 package com.github.hbq969.code.dict.service.api.impl;
 
 import com.github.hbq969.code.dict.model.Dict;
+import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.service.api.DictHelper;
 import com.github.hbq969.code.dict.service.api.DictModel;
 import com.github.hbq969.code.dict.service.api.Td;
@@ -8,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author : hbq969@gmail.com
@@ -52,6 +50,11 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
     @Override
     public Map<String, String> queryPairs(String dictName) {
         return mapDict.queryPairs(dictName);
+    }
+
+    @Override
+    public List<Pair> queryPairList(String dictName) {
+        return mapDict.queryPairList(dictName);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.github.hbq969.code.dict.service.api;
 
 import com.github.hbq969.code.dict.model.Dict;
+import com.github.hbq969.code.dict.model.Pair;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +25,8 @@ public interface DictHelper<T> {
     String queryValue(String dictName, String key);
 
     Map<String, String> queryPairs(String dictName);
+
+    List<Pair> queryPairList(String dictName);
 
     void reloadImmediately();
 

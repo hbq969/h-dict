@@ -2,16 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.hbq969.code.dict.dao.DictDao">
     <select id="queryDicts" resultType="com.github.hbq969.code.dict.model.SqlDict">
-        select a.dict_name       AS "dictName",
-               a.dict_desc       AS "dictDesc",
-               a.dict_source     AS "dictSource",
-               a.key_column      AS "keyColumn",
-               a.val_column      AS "valColumn",
-               count(b.pair_key) AS "dictNum",
-               c.sql_content     AS "sqlContent"
+        select a.app AS "app",
+        a.dict_name AS "dictName",
+        a.dict_desc AS "dictDesc",
+        a.dict_source AS "dictSource",
+        a.key_column AS "keyColumn",
+        a.val_column AS "valColumn",
+        count(b.pair_key) AS "dictNum",
+        c.sql_content AS "sqlContent"
         from h_dict_base a
-                 left join h_dict_pairs b on a.dict_name = b.dict_name
-                 left join h_dict_sql c on a.dict_name = c.dict_name
+        left join h_dict_pairs b on a.dict_name = b.dict_name
+        left join h_dict_sql c on a.dict_name = c.dict_name
         <where>
             <if test="dictName != null and dictName != ''">
                 <bind name="dictNameLike" value="'%' + dictName + '%'"/>
@@ -24,8 +25,12 @@
             <if test="dictSource != null and dictSource != -1">
                 and a.dict_source = #{dictSource}
             </if>
+            <if test="app!=null and app!=''">
+                <bind name="appLike" value="'%' + app + '%'"/>
+                and a.app like #{appLike}
+            </if>
         </where>
-        group by a.dict_name, a.dict_desc, a.dict_source, a.key_column, a.val_column, c.sql_content
+        group by a.app,a.dict_name, a.dict_desc, a.dict_source, a.key_column, a.val_column, c.sql_content
     </select>
 
     <select id="queryPairs" resultType="com.github.hbq969.code.dict.model.Pair">
@@ -36,7 +41,8 @@
     </select>
 
     <select id="queryFixDicts" resultType="com.github.hbq969.code.dict.model.FixDict">
-        select a.dict_name       AS "dictName",
+        select a.app             AS "app",
+               a.dict_name       AS "dictName",
                a.dict_desc       AS "dictDesc",
                a.dict_source     AS "dictSource",
                a.key_column      AS "keyColumn",
@@ -45,11 +51,12 @@
         from h_dict_base a
                  left join h_dict_pairs b on a.dict_name = b.dict_name
         where a.dict_source = 1
-        group by a.dict_name, a.dict_desc, a.dict_source, a.key_column, a.val_column
+        group by a.app, a.dict_name, a.dict_desc, a.dict_source, a.key_column, a.val_column
     </select>
 
     <select id="querySqlDicts" resultType="com.github.hbq969.code.dict.model.SqlDict">
-        select a.dict_name   AS "dictName",
+        select a.app         AS "app",
+               a.dict_name   AS "dictName",
                a.dict_desc   AS "dictDesc",
                a.dict_source AS "dictSource",
                a.key_column  AS "keyColumn",
@@ -65,7 +72,8 @@
     </select>
 
     <select id="queryFixDictPairs" resultType="map">
-        select b.dict_name  AS "dn",
+        select a.app        AS "app",
+               b.dict_name  AS "dn",
                b.pair_key   AS "key",
                b.pair_value AS "value"
         from h_dict_base a,

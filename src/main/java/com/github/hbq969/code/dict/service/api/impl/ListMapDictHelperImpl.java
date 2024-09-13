@@ -3,13 +3,11 @@ package com.github.hbq969.code.dict.service.api.impl;
 import cn.hutool.core.util.ArrayUtil;
 import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.dict.model.Dict;
+import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.service.api.DictHelper;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author : hbq969@gmail.com
@@ -53,6 +51,11 @@ public class ListMapDictHelperImpl implements DictHelper<List<Map>> {
     @Override
     public Map<String, String> queryPairs(String dictName) {
         return this.proxy.queryPairs(dictName);
+    }
+
+    @Override
+    public List<Pair> queryPairList(String dictName) {
+        return this.proxy.queryPairList(dictName);
     }
 
     @Override

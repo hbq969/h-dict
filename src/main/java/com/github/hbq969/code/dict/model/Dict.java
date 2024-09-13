@@ -13,6 +13,10 @@ import lombok.Data;
 @Data
 public class Dict implements IModel<Dict> {
     /**
+     * 创建字典的应用名称，取spring.application.name
+     */
+    private String app = "common";
+    /**
      * 字典字段名称
      */
     private String dictName;

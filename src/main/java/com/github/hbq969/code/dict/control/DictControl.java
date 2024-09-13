@@ -6,6 +6,7 @@ import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.dict.control.vo.DictPair;
 import com.github.hbq969.code.dict.control.vo.QueryDict;
 import com.github.hbq969.code.dict.control.vo.QueryTran;
+import com.github.hbq969.code.dict.model.AppDict;
 import com.github.hbq969.code.dict.model.Dict;
 import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.model.SqlDict;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +32,8 @@ import java.util.Optional;
  * @description : DictControl
  * @createTime : 2024/5/14 15:39
  */
-@RestController("h-dict-DictControl")
-@RequestMapping(path = "/ui-dict")
-@Api(tags = "字典管理接口")
+@RequestMapping(path = "/hbq969-dict")
+@Api(tags = "维护使用-字典管理接口")
 @Slf4j
 public class DictControl implements ICommonControl {
 
@@ -42,16 +43,19 @@ public class DictControl implements ICommonControl {
     @Autowired
     private MapDictHelperImpl mapDictHelper;
 
-    @Autowired
-    private JdbcTemplate jt;
+    @Value("${spring.application.name}")
+    private String app;
 
     @ApiOperation("字典分页查询")
     @RequestMapping(path = "/queryDicts", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnMessage<List<SqlDict>> queryDicts(@RequestBody QueryDict q) {
+    public ReturnMessage<AppDict> queryDicts(@RequestBody QueryDict q) {
         PageInfo<Dict> pi = PageHelper.startPage(q.getPageNum(), q.getPageSize())
                 .doSelectPageInfo(() -> dictService.queryDicts(q));
-        return ReturnMessage.success(pi);
+        AppDict ad = new AppDict();
+        ad.setPageInfo(pi);
+        ad.setCurApp(app);
+        return ReturnMessage.success(ad);
     }
 
     @ApiOperation("删除字典信息")

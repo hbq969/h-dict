@@ -2,20 +2,22 @@ package com.github.hbq969.code.dict.service.api.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.github.hbq969.code.common.spring.context.SpringContext;
-import com.github.hbq969.code.common.utils.SqlUtils;
+import com.github.hbq969.code.common.utils.InitScriptUtils;
 import com.github.hbq969.code.dict.config.DictConf;
 import com.github.hbq969.code.dict.dao.DictDao;
+import com.github.hbq969.code.dict.event.DictChangeEvent;
 import com.github.hbq969.code.dict.model.Dict;
+import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.service.api.DictHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,8 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
 
     private volatile Map<String, Dict> dictMap = new HashMap<>(2 << 6);
 
+    private SpringContext context;
+
     private JdbcTemplate jt;
 
     private DictDao dictDao;
@@ -38,6 +42,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
     private DictConf conf;
 
     public MapDictHelperImpl(SpringContext context) {
+        this.context = context;
         this.jt = context.getBean(JdbcTemplate.class);
         this.dictDao = context.getBean("h-dict-DictDao", DictDao.class);
         this.conf = context.getBean(DictConf.class);
@@ -74,7 +79,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
         } catch (Exception e) {
             log.info("h_dict_sql_county已存在");
         }
-        SqlUtils.initDataSql(jt, "/", "init.sql", null, Charset.defaultCharset());
+        InitScriptUtils.initial(this.context, "h-dict-data.sql", null);
     }
 
     @Override
@@ -111,6 +116,23 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
         return this.pairsMap.get(dictName);
     }
 
+    @Override
+    public List<Pair> queryPairList(String dictName) {
+        Map<String, String> map = queryPairs(dictName);
+        if (MapUtils.isEmpty(map)) {
+            return Collections.emptyList();
+        }
+        List<Pair> pairList = new ArrayList<>(map.size());
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            Pair p = new Pair();
+            p.setKey(e.getKey());
+            p.setValue(e.getValue());
+            pairList.add(p);
+        }
+        return pairList;
+    }
+
+    @EventListener(DictChangeEvent.class)
     @Scheduled(cron = "${dict.reload.cron:0,30 * * * * *}")
     @Override
     public void reloadImmediately() {
@@ -126,8 +148,9 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
             }).collect(Collectors.toMap(d -> d.getDictName(), d -> d, (d1, d2) -> d2));
             dictTmpMap.putAll(sdm);
             this.dictMap = dictTmpMap;
-            log.info("重载字典基本信息数据: {} 个", this.dictMap.size());
-
+            if (log.isDebugEnabled()) {
+                log.debug("重载字典基本信息数据: {} 个", this.dictMap.size());
+            }
             Map<String, Map<String, String>> pairsTmpMap = new HashMap<>(2 << 8);
             dictDao.queryFixDictPairs().forEach(m -> {
                 String dn = MapUtils.getString(m, "dn");
@@ -135,7 +158,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
                 String val = MapUtils.getString(m, "value");
                 Map<String, String> pm = pairsTmpMap.get(dn);
                 if (pm == null) {
-                    pm = new HashMap<>(16);
+                    pm = new LinkedHashMap<>(16);
                     pairsTmpMap.put(dn, pm);
                 }
                 pm.put(key, val);
@@ -149,7 +172,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
                         String val = MapUtils.getString(m, "value");
                         Map<String, String> pm = pairsTmpMap.get(dn);
                         if (pm == null) {
-                            pm = new HashMap<>(16);
+                            pm = new LinkedHashMap<>(16);
                             pairsTmpMap.put(dn, pm);
                         }
                         pm.put(key, val);
@@ -159,7 +182,9 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
                 }
             });
             this.pairsMap = pairsTmpMap;
-            log.info("重载字典枚举数据: {} 个", this.pairsMap.size());
+            if (log.isDebugEnabled()) {
+                log.info("重载字典枚举数据: {} 个", this.pairsMap.size());
+            }
 
         } catch (Exception e) {
             log.error("启动加载字典数据异常", e);

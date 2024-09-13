@@ -18,11 +18,6 @@ public class DictConf {
     private boolean enabled = true;
 
     /**
-     * 字典api访问授权码
-     */
-    private String dictToken = "hbq969@gmail.com";
-
-    /**
      * 转义map时，转义后key前缀
      */
     private String mapKeyPrefix = "fmt";

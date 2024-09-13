@@ -26,11 +26,14 @@ public abstract class AbstractDictManage implements DictManage, OptionalFacadeAw
 
     private CountDownLatch cdl = new CountDownLatch(1);
 
+    private String app;
+
 
     public AbstractDictManage(SpringContext context) {
         this.context = context;
         this.facade = context.getBean("h-dict-DictManageFacade", DictManageFacade.class);
         this.jt = context.getBean(JdbcTemplate.class);
+        this.app = context.getProperty("spring.application.name", "common");
     }
 
     @Override
@@ -40,25 +43,26 @@ public abstract class AbstractDictManage implements DictManage, OptionalFacadeAw
 
     @Override
     public void addDict(Dict dict) {
-        jt.update("insert into h_dict_base(dict_name,dict_desc,dict_source,key_column,val_column) values(?,?,?,?,?)", ps -> {
+        jt.update("insert into h_dict_base(dict_name,dict_desc,dict_source,key_column,val_column,app) values(?,?,?,?,?,?)", ps -> {
             ps.setString(1, dict.getDictName());
             ps.setString(2, dict.getDictDesc());
             ps.setInt(3, dict.getDictSource());
             ps.setString(4, dict.getKeyColumn());
             ps.setString(5, dict.getValColumn());
+            ps.setString(6, app);
         });
         log.info("保存字典基本信息成功, {}", dict);
     }
 
     @Override
     public void deleteDict(String dn) {
-        jt.update("delete from h_dict_base where dict_name=?", new Object[]{dn});
+        jt.update("delete from h_dict_base where app=? and dict_name=?", new Object[]{this.app, dn});
         log.info("删除字典基本信息成功, {}", dn);
     }
 
     @Override
     public void updateDict(Dict dict) {
-        jt.update("delete from h_dict_base where dict_name=?", new Object[]{dict.getDictName()});
+        jt.update("delete from h_dict_base where app=? and dict_name=?", new Object[]{this.app, dict.getDictName()});
         addDict(dict);
         log.info("更新字典基本信息成功, {}", dict);
     }

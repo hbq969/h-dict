@@ -5,14 +5,14 @@
 
   <distributionManagement>
     <repository>
-      <id>nexus-releases</id>
+      <id>thirdparty-cmss</id>
       <name>Nexus Releases Repository</name>
-      <url>http://nexus.cmss.com:8081/repository/bcop-releases/</url>
+      <url>http://nexus.cmss.com:8081/repository/thirdparty-cmss/</url>
     </repository>
     <snapshotRepository>
-      <id>nexus-snapshots</id>
+      <id>thirdparty-snapshot</id>
       <name>Nexus Snapshots Repository</name>
-      <url>http://nexus.cmss.com:8081/repository/bcop-snapshots/</url>
+      <url>http://nexus.cmss.com:8081/repository/thirdparty-snapshot/</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -69,7 +69,7 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>META-INF/*</include>
-          <include>static/ui-dict/</include>
+          <include>static/hbq969-dict/</include>
           <include>*.sql</include>
         </includes>
       </resource>

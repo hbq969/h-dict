@@ -12,6 +12,7 @@ import java.util.List;
  * @createTime : 2024/5/11 17:59
  */
 public interface DictManage {
+    @Transactional
     void addPair(String dictName, Pair pair);
 
     @Transactional

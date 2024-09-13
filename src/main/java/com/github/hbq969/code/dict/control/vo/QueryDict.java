@@ -12,6 +12,7 @@ public class QueryDict {
     private String dictName;
     private String dictDesc;
     private Integer dictSource;
+    private String app;
     private Integer pageSize = 10;
     private Integer pageNum = 1;
 }

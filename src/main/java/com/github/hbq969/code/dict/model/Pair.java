@@ -1,11 +1,12 @@
 package com.github.hbq969.code.dict.model;
 
-import cn.hutool.core.lang.Assert;
 import com.github.hbq969.code.common.lang.ICheck;
 import com.github.hbq969.code.common.spring.context.SpringContext;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author : hbq969@gmail.com
@@ -16,11 +17,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Pair implements ICheck {
+    @ApiModelProperty(hidden = true)
+    private int pairAddWay;
     private String key;
     private String value;
+    @ApiModelProperty(hidden = true)
+    private String pairString;
 
     @Override
     public void validCheck(SpringContext context) {
-        Assert.notNull(key, "字典枚举key值不能为空");
+    }
+
+    @Override
+    public void validCheck(SpringContext context, RuntimeException ex) {
+        if (pairAddWay == 1 && key == null) {
+            throw ex;
+        }
+        if (pairAddWay == 2 && StringUtils.isEmpty(pairString)) {
+            throw ex;
+        }
     }
 }

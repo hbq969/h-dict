@@ -37,6 +37,7 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public void delDict(Dict dict) {
+        dict.setApp(context.getProperty("spring.application.name"));
         context.getBean(DictManageFacade.class)
                 .getService(dict.getDictSource()).deleteDict(dict.getDictName());
         context.getBean(MapDictHelperImpl.class).reloadImmediately();
@@ -44,6 +45,7 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public void updateDict(SqlDict dict) {
+        dict.setApp(context.getProperty("spring.application.name"));
         context.getBean(DictManageFacade.class)
                 .getService(dict.getDictSource()).updateDict(dict);
         context.getBean(MapDictHelperImpl.class).reloadImmediately();

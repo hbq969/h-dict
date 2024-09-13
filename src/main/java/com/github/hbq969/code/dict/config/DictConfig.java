@@ -1,6 +1,7 @@
 package com.github.hbq969.code.dict.config;
 
 import com.github.hbq969.code.common.spring.context.SpringContext;
+import com.github.hbq969.code.dict.control.DictControl;
 import com.github.hbq969.code.dict.service.api.impl.*;
 import com.github.hbq969.code.dict.service.spi.impl.DictManageFacade;
 import com.github.hbq969.code.dict.service.spi.impl.FixDictManageImpl;
@@ -24,6 +25,12 @@ public class DictConfig {
     @Bean
     DictConf dictConf() {
         return new DictConf();
+    }
+
+    @ConditionalOnExpression("${dict.enabled:false}")
+    @Bean
+    DictControl dictControl() {
+        return new DictControl();
     }
 
     @ConditionalOnExpression("${dict.enabled:false}")
@@ -72,10 +79,5 @@ public class DictConfig {
     @Bean("h-dict-DictServiceImpl")
     DictServiceImpl dictService() {
         return new DictServiceImpl();
-    }
-
-    @Bean("h-dict-PermitHandlerInterceptor")
-    PermitHandlerInterceptor permitHandlerInterceptor() {
-        return new PermitHandlerInterceptor();
     }
 }

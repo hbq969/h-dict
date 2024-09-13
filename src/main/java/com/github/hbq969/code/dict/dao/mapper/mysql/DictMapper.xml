@@ -8,7 +8,8 @@
             `dict_desc`   varchar(200) not null,
             `dict_source` varchar(20) default 'fix' comment 'fix: 固定枚举, sql: 使用表枚举',
             `key_column`  varchar(10) default 'key' comment '字典枚举key取值类型, 支持key、val',
-            `val_column`  varchar(10) default 'val' comment '字典枚举key取值类型, 支持key、val'
+            `val_column`  varchar(10) default 'val' comment '字典枚举key取值类型, 支持key、val',
+            `app` varchar(200) default 'common' comment '字典是哪个应用创建的'
         ) ENGINE = InnoDB
           DEFAULT CHARSET = utf8
     </update>

@@ -3,6 +3,7 @@ package com.github.hbq969.code.dict.service.spi.impl;
 import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.common.utils.StrUtils;
 import com.github.hbq969.code.dict.model.Pair;
+import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -47,9 +48,21 @@ public class FixDictManageImpl extends AbstractDictManage {
             throw new IllegalArgumentException("dictName、pair不能为空");
         }
         pair.validCheck(context);
-        jt.update("insert into h_dict_pairs(dict_name,pair_Key,pair_value) values(?,?,?)"
-                , new Object[]{dictName, pair.getKey(), pair.getValue()}
-                , new int[]{Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
+        if (pair.getPairAddWay() == 1) {
+            jt.update("insert into h_dict_pairs(dict_name,pair_Key,pair_value) values(?,?,?)"
+                    , new Object[]{dictName, pair.getKey(), pair.getValue()}
+                    , new int[]{Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
+        } else if (pair.getPairAddWay() == 2) {
+            for (String p : Splitter.onPattern("[,;，；]").splitToList(pair.getPairString())) {
+                List<String> list = Splitter.onPattern("[:：]").splitToList(p);
+                if (list.size() != 2) {
+                    throw new IllegalArgumentException("批量添加枚举值格式不对，请检查");
+                }
+                jt.update("insert into h_dict_pairs(dict_name,pair_Key,pair_value) values(?,?,?)"
+                        , new Object[]{dictName, list.get(0), list.get(1)}
+                        , new int[]{Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
+            }
+        }
         log.info("添加字典枚举值成功: {}, {}", dictName, pair);
     }
 
