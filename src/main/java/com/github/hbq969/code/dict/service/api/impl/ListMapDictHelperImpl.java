@@ -54,8 +54,18 @@ public class ListMapDictHelperImpl implements DictHelper<List<Map>> {
     }
 
     @Override
+    public Map<String, String> queryPairs(String dictName, boolean flip) {
+        return this.proxy.queryPairs(dictName, flip);
+    }
+
+    @Override
     public List<Pair> queryPairList(String dictName) {
         return this.proxy.queryPairList(dictName);
+    }
+
+    @Override
+    public List<Pair> queryPairList(String dictName, boolean flip) {
+        return this.proxy.queryPairList(dictName, flip);
     }
 
     @Override

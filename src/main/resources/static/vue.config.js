@@ -6,7 +6,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/dev': {
-        target: 'http://localhost:32100/cscenter-workbench',
+        target: 'http://localhost:30120',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/dev': '' },

@@ -53,8 +53,18 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
     }
 
     @Override
+    public Map<String, String> queryPairs(String dictName, boolean flip) {
+        return this.mapDict.queryPairs(dictName, flip);
+    }
+
+    @Override
     public List<Pair> queryPairList(String dictName) {
         return mapDict.queryPairList(dictName);
+    }
+
+    @Override
+    public List<Pair> queryPairList(String dictName, boolean flip) {
+        return this.mapDict.queryPairList(dictName, flip);
     }
 
     @Override

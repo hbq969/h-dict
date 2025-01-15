@@ -26,7 +26,11 @@ public interface DictHelper<T> {
 
     Map<String, String> queryPairs(String dictName);
 
+    Map<String, String> queryPairs(String dictName, boolean flip);
+
     List<Pair> queryPairList(String dictName);
+
+    List<Pair> queryPairList(String dictName, boolean flip);
 
     void reloadImmediately();
 

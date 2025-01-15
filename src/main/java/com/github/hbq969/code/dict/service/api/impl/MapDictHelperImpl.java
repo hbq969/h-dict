@@ -117,6 +117,20 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
     }
 
     @Override
+    public Map<String, String> queryPairs(String dictName, boolean flip) {
+        if (flip) {
+            Map<String, String> map = queryPairs(dictName);
+            Map<String, String> fm = new HashMap<>(CollectionUtils.size(map));
+            for (Map.Entry<String, String> e : map.entrySet()) {
+                fm.put(e.getValue(), e.getKey());
+            }
+            return fm;
+        } else {
+            return queryPairs(dictName);
+        }
+    }
+
+    @Override
     public List<Pair> queryPairList(String dictName) {
         Map<String, String> map = queryPairs(dictName);
         if (MapUtils.isEmpty(map)) {
@@ -130,6 +144,26 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
             pairList.add(p);
         }
         return pairList;
+    }
+
+    @Override
+    public List<Pair> queryPairList(String dictName, boolean flip) {
+        if (flip) {
+            Map<String, String> map = queryPairs(dictName);
+            if (MapUtils.isEmpty(map)) {
+                return Collections.emptyList();
+            }
+            List<Pair> pairList = new ArrayList<>(map.size());
+            for (Map.Entry<String, String> e : map.entrySet()) {
+                Pair p = new Pair();
+                p.setKey(e.getValue());
+                p.setValue(e.getKey());
+                pairList.add(p);
+            }
+            return pairList;
+        } else {
+            return queryPairList(dictName);
+        }
     }
 
     @EventListener(DictChangeEvent.class)
