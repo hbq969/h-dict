@@ -13,13 +13,11 @@ export default (config: any) => {
       // dev环境
       {
         baseURL: process.env.VUE_APP_DEV_BASE_URL,
-        timeout: 5000,
         headers: { Authentication: store.getters.getAuthentication || defaultAuthentication }
       } :
       // prod环境
       {
         baseURL: process.env.VUE_APP_PROD_BASE_URL,
-        timeout: 5000,
         headers: { Authentication: store.getters.getAuthentication || defaultAuthentication }
       });
 
