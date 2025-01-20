@@ -21,3 +21,6 @@ mybatis:
     - classpath*:**/mapper/common/*Mapper.xml
     - classpath*:**/mapper/mysql/*Mapper.xml
   config-location: classpath:jpaConfig-mysql.xml
+
+operlog:
+  enabled: true

@@ -1,8 +1,8 @@
 package com.github.hbq969.code.dict.control;
 
+import com.github.hbq969.code.common.log.api.Log;
 import com.github.hbq969.code.common.restful.ICommonControl;
 import com.github.hbq969.code.common.restful.ReturnMessage;
-import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.dict.control.vo.DictPair;
 import com.github.hbq969.code.dict.control.vo.QueryDict;
 import com.github.hbq969.code.dict.control.vo.QueryTran;
@@ -17,15 +17,11 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author : hbq969@gmail.com
@@ -61,6 +57,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("删除字典信息")
     @RequestMapping(path = "/delDict", method = RequestMethod.POST)
     @ResponseBody
+    @Log(collectResult = true)
     public ReturnMessage<?> delDict(@RequestBody Dict dict) {
         dictService.delDict(dict);
         return ReturnMessage.success("删除成功");
@@ -69,6 +66,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("新增、更新字典基本信息")
     @RequestMapping(path = "/updateDict", method = RequestMethod.POST)
     @ResponseBody
+    @Log(collectResult = true)
     public ReturnMessage<?> updateDict(@RequestBody SqlDict dict) {
         dictService.updateDict(dict);
         return ReturnMessage.success("操作成功");
@@ -88,6 +86,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("重载字典数据")
     @RequestMapping(path = "/reloadDict", method = RequestMethod.POST)
     @ResponseBody
+    @Log(collectResult = true)
     public ReturnMessage<?> reloadDict() {
         mapDictHelper.reloadImmediately();
         return ReturnMessage.success("操作成功");
@@ -96,6 +95,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("保存固定枚举值")
     @RequestMapping(path = "/addPair", method = RequestMethod.POST)
     @ResponseBody
+    @Log(collectResult = true)
     public ReturnMessage<?> addPair(@RequestBody DictPair pair) {
         dictService.addPair(pair);
         return ReturnMessage.success("保存成功");
@@ -104,6 +104,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("删除固定枚举值")
     @RequestMapping(path = "/delPair", method = RequestMethod.POST)
     @ResponseBody
+    @Log(collectResult = true)
     public ReturnMessage<?> delPair(@RequestBody DictPair pair) {
         dictService.delPair(pair);
         return ReturnMessage.success("保存成功");

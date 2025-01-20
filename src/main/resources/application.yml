@@ -114,3 +114,13 @@ tabula:
   enabled: false
   dialect: mysql
   schema: openstack
+
+operlog:
+  enabled: false
+  use-default-collect-policy: false
+  policy: mysql
+  thread-num: 1
+  batch-size: 50
+  batch-timeout-mills: 5000
+  queue-capacity: 5000
+  table-name: log_dict
