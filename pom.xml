@@ -1,79 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <distributionManagement>
-    <repository>
-      <id>thirdparty-cmss</id>
-      <name>Nexus Releases Repository</name>
-      <url>http://nexus.cmss.com:8081/repository/thirdparty-cmss/</url>
-    </repository>
-    <snapshotRepository>
-      <id>thirdparty-snapshot</id>
-      <name>Nexus Snapshots Repository</name>
-      <url>http://nexus.cmss.com:8081/repository/thirdparty-snapshot/</url>
-    </snapshotRepository>
-  </distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>thirdparty-cmss</id>
+            <name>Nexus Releases Repository</name>
+            <url>http://nexus.cmss.com:8081/repository/thirdparty-cmss/</url>
+        </repository>
+        <snapshotRepository>
+            <id>thirdparty-snapshot</id>
+            <name>Nexus Snapshots Repository</name>
+            <url>http://nexus.cmss.com:8081/repository/thirdparty-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-  <parent>
+    <parent>
+        <groupId>com.github.hbq969</groupId>
+        <artifactId>h-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.github.hbq969</groupId>
-    <artifactId>h-parent</artifactId>
+    <artifactId>h-dict</artifactId>
     <version>1.0-SNAPSHOT</version>
-  </parent>
+    <name>h-dict</name>
+    <description>Spring Boot Archetype</description>
 
-  <groupId>com.github.hbq969</groupId>
-  <artifactId>h-dict</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <name>h-dict</name>
-  <description>Spring Boot Archetype</description>
+    <properties>
+        <common.version>1.0-SNAPSHOT</common.version>
+    </properties>
 
-  <properties>
-    <common.version>1.0-SNAPSHOT</common.version>
-  </properties>
+    <dependencies>
+        <!-- bc exts jars -->
+        <dependency>
+            <groupId>com.github.hbq969</groupId>
+            <artifactId>h-common</artifactId>
+            <version>${common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>feign-okhttp</artifactId>
+                    <groupId>io.github.openfeign</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsch</artifactId>
+                    <groupId>com.jcraft</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hbq969</groupId>
+            <artifactId>h-sm</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--    <dependency>-->
+        <!--      <groupId>com.baomidou</groupId>-->
+        <!--      <artifactId>mybatis-plus-boot-starter</artifactId>-->
+        <!--      <version>3.0.7</version>-->
+        <!--    </dependency>-->
+    </dependencies>
 
-  <dependencies>
-    <!-- bc exts jars -->
-    <dependency>
-      <groupId>com.github.hbq969</groupId>
-      <artifactId>h-common</artifactId>
-      <version>${common.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>feign-okhttp</artifactId>
-          <groupId>io.github.openfeign</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jsch</artifactId>
-          <groupId>com.jcraft</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>com.baomidou</groupId>-->
-    <!--      <artifactId>mybatis-plus-boot-starter</artifactId>-->
-    <!--      <version>3.0.7</version>-->
-    <!--    </dependency>-->
-  </dependencies>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*Mapper.xml</include>
-        </includes>
-        <filtering>true</filtering>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>META-INF/*</include>
-          <include>static/hbq969-dict/</include>
-          <include>*.sql</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*Mapper.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/*</include>
+                    <include>static/hbq969-dict/</include>
+                    <include>*.sql</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 
 </project>

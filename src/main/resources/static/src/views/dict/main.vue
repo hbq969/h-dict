@@ -65,6 +65,9 @@ const queryDicts = () => {
       data.dictList = res.data.body.pageInfo.list
       data.total = res.data.body.pageInfo.total;
       data.app = res.data.body.curApp;
+    }else{
+      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      msg(content, "warning")
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')
@@ -79,6 +82,9 @@ const reloadDict = () => {
   }).then((res: any) => {
     if (res.data.state == 'OK') {
       msg('重载成功', 'success')
+    }else{
+      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      msg(content, "warning")
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')
@@ -98,6 +104,9 @@ const delDict = (scope: any) => {
     if (res.data.state == 'OK') {
       msg('删除成功', 'success')
       queryDicts()
+    }else{
+      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      msg(content, "warning")
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')
@@ -141,6 +150,9 @@ const updateDict = () => {
       msg('修改成功', 'success')
       dialogFormVisible.value = false
       queryDicts()
+    }else{
+      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      msg(content, "warning")
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')
@@ -185,6 +197,9 @@ const queryPairs = () => {
     if (res.data.state == 'OK') {
       dictInfo.pairs = res.data.body.list;
       dictInfo.pairTotal = res.data.body.total;
+    }else{
+      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      msg(content, "warning")
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')
@@ -216,6 +231,9 @@ const addPair = () => {
           if (res.data.state == 'OK') {
             msg('添加成功', 'success')
             queryPairs()
+          }else{
+            let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+            msg(content, "warning")
           }
         }).catch((err: Error) => {
           msg('请求异常', 'error')
@@ -245,6 +263,9 @@ const delPair = (scope: any) => {
     if (res.data.state == 'OK') {
       msg('删除成功', 'success')
       queryPairs()
+    }else{
+      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      msg(content, "warning")
     }
   }).catch((err: Error) => {
     msg('请求异常', 'error')

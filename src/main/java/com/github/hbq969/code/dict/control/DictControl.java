@@ -12,6 +12,7 @@ import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.model.SqlDict;
 import com.github.hbq969.code.dict.service.api.DictService;
 import com.github.hbq969.code.dict.service.api.impl.MapDictHelperImpl;
+import com.github.hbq969.code.sm.perm.api.SMRequiresPermissions;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -45,6 +46,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("字典分页查询")
     @RequestMapping(path = "/queryDicts", method = RequestMethod.POST)
     @ResponseBody
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "queryDicts",apiDesc = "字典分页查询")
     public ReturnMessage<AppDict> queryDicts(@RequestBody QueryDict q) {
         PageInfo<Dict> pi = PageHelper.startPage(q.getPageNum(), q.getPageSize())
                 .doSelectPageInfo(() -> dictService.queryDicts(q));
@@ -58,6 +60,7 @@ public class DictControl implements ICommonControl {
     @RequestMapping(path = "/delDict", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "delDict",apiDesc = "删除字典信息")
     public ReturnMessage<?> delDict(@RequestBody Dict dict) {
         dictService.delDict(dict);
         return ReturnMessage.success("删除成功");
@@ -67,6 +70,7 @@ public class DictControl implements ICommonControl {
     @RequestMapping(path = "/updateDict", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "updateDict",apiDesc = "新增、更新字典基本信息")
     public ReturnMessage<?> updateDict(@RequestBody SqlDict dict) {
         dictService.updateDict(dict);
         return ReturnMessage.success("操作成功");
@@ -75,6 +79,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("字典固定枚举值分页查询")
     @RequestMapping(path = "/queryPairs", method = RequestMethod.GET)
     @ResponseBody
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "queryPairs",apiDesc = "字典固定枚举值分页查询")
     public ReturnMessage<List<Pair>> queryPairs(@RequestParam(name = "pageNum", defaultValue = "1") Integer pageNum,
                                                 @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                                 @RequestParam(name = "dictName") String dictName) {
@@ -87,6 +92,7 @@ public class DictControl implements ICommonControl {
     @RequestMapping(path = "/reloadDict", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "reloadDict",apiDesc = "重载字典数据")
     public ReturnMessage<?> reloadDict() {
         mapDictHelper.reloadImmediately();
         return ReturnMessage.success("操作成功");
@@ -96,6 +102,7 @@ public class DictControl implements ICommonControl {
     @RequestMapping(path = "/addPair", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "addPair",apiDesc = "保存固定枚举值")
     public ReturnMessage<?> addPair(@RequestBody DictPair pair) {
         dictService.addPair(pair);
         return ReturnMessage.success("保存成功");
@@ -105,6 +112,7 @@ public class DictControl implements ICommonControl {
     @RequestMapping(path = "/delPair", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "delPair",apiDesc = "删除固定枚举值")
     public ReturnMessage<?> delPair(@RequestBody DictPair pair) {
         dictService.delPair(pair);
         return ReturnMessage.success("保存成功");
@@ -113,6 +121,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("查询字典基本信息是否存在")
     @RequestMapping(path = "/queryDict", method = RequestMethod.GET)
     @ResponseBody
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "queryDict",apiDesc = "查询字典基本信息是否存在")
     public ReturnMessage<Boolean> queryDict(@RequestParam(name = "dn") String dn) {
         return ReturnMessage.success(dictService.queryDict(dn));
     }
@@ -120,6 +129,7 @@ public class DictControl implements ICommonControl {
     @ApiOperation("测试字典转义")
     @RequestMapping(path = "/dictTransCheck", method = RequestMethod.POST)
     @ResponseBody
+    @SMRequiresPermissions(menu = "Dictionary",apiKey = "dictTransCheck",apiDesc = "测试字典转义")
     public ReturnMessage<?> dictTransCheck(@RequestBody QueryTran q) {
         return ReturnMessage.success(mapDictHelper.queryValue(q.getDn(), q.getPairKey()));
     }
