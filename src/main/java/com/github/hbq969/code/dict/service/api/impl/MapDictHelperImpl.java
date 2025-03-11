@@ -18,6 +18,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,29 +58,33 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
     private void dictInit() {
         try {
             this.dictDao.createDictBase();
-            log.info("创建h_dict_base成功");
         } catch (Exception e) {
-            log.info("h_dict_base已存在");
+            if (log.isTraceEnabled()) {
+                log.trace("h_dict_base已存在");
+            }
         }
         try {
             this.dictDao.createDictPairs();
-            log.info("创建h_dict_pairs成功");
         } catch (Exception e) {
-            log.info("h_dict_pairs已存在");
+            if (log.isTraceEnabled()) {
+                log.trace("h_dict_pairs已存在");
+            }
         }
         try {
             this.dictDao.createDictSql();
-            log.info("创建h_dict_sql成功");
         } catch (Exception e) {
-            log.info("h_dict_sql已存在");
+            if (log.isTraceEnabled()) {
+                log.trace("h_dict_sql已存在");
+            }
         }
         try {
             this.dictDao.createDictSqlCounty();
-            log.info("创建h_dict_sql_county成功");
         } catch (Exception e) {
-            log.info("h_dict_sql_county已存在");
+            if (log.isTraceEnabled()) {
+                log.trace("h_dict_sql_county已存在");
+            }
         }
-        InitScriptUtils.initial(this.context, "h-dict-data.sql", null);
+        InitScriptUtils.initial(context, "h-dict-data.sql", StandardCharsets.UTF_8, null, null);
     }
 
     @Override
@@ -217,7 +222,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
             });
             this.pairsMap = pairsTmpMap;
             if (log.isDebugEnabled()) {
-                log.info("重载字典枚举数据: {} 个", this.pairsMap.size());
+                log.debug("重载字典枚举数据: {} 个", this.pairsMap.size());
             }
 
         } catch (Exception e) {
