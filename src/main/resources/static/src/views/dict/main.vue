@@ -3,6 +3,9 @@ import {Edit} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from 'vue'
 import axios from '@/network/index'
 import {msg} from '@/utils/Utils'
+import {getLangData} from "@/i18n/locale";
+
+const langData = getLangData()
 
 const form = reactive({
   dictName: '',
@@ -66,11 +69,11 @@ const queryDicts = () => {
       data.total = res.data.body.pageInfo.total;
       data.app = res.data.body.curApp;
     }else{
-      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
 }
 
@@ -81,13 +84,13 @@ const reloadDict = () => {
     method: 'post'
   }).then((res: any) => {
     if (res.data.state == 'OK') {
-      msg('重载成功', 'success')
+      msg(res.data.body, 'success')
     }else{
-      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
 }
 
@@ -102,14 +105,14 @@ const delDict = (scope: any) => {
     }
   }).then((res: any) => {
     if (res.data.state == 'OK') {
-      msg('删除成功', 'success')
+      msg(res.data.body, 'success')
       queryDicts()
     }else{
-      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
 }
 
@@ -147,15 +150,15 @@ const updateDict = () => {
     data: dictInfo
   }).then((res: any) => {
     if (res.data.state == 'OK') {
-      msg('修改成功', 'success')
+      msg(res.data.body, 'success')
       dialogFormVisible.value = false
       queryDicts()
     }else{
-      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
 }
 
@@ -171,7 +174,7 @@ onMounted(() => {
 
 const dialogFormVisible = ref(false)
 const dialogPairFormVisible = ref(false)
-const pairAddWays = reactive([{key: '1', label: '单个添加'}, {key: '2', label: '批量添加'}])
+const pairAddWays = reactive([{key: '1', label: langData.dictSingleAdd}, {key: '2', label: langData.dictBatchAdd}])
 const pairInfo = reactive({
   pairAddWay: '1',
   key: '',
@@ -185,8 +188,8 @@ const pairInfo = reactive({
   }
 })
 const changePairAddWay = () => {
-  console.log('++++切换方式: ', pairInfo.pairAddWay)
-  console.log('++++切换方式类型: ', typeof pairInfo.pairAddWay)
+  console.debug('切换方式: ', pairInfo.pairAddWay)
+  console.debug('切换方式类型: ', typeof pairInfo.pairAddWay)
 }
 
 const queryPairs = () => {
@@ -198,11 +201,11 @@ const queryPairs = () => {
       dictInfo.pairs = res.data.body.list;
       dictInfo.pairTotal = res.data.body.total;
     }else{
-      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
 }
 
@@ -217,7 +220,7 @@ const addPair = () => {
     method: 'get'
   }).then((res: any) => {
     if (res.data.state == 'OK' && !res.data.body) {
-      msg('字典基本信息不存在，请先添加', 'warning')
+      msg(langData.dictBaseInfoNotExists, 'warning')
     } else {
       if (dictInfo.valid()) {
         axios({
@@ -229,21 +232,21 @@ const addPair = () => {
           }
         }).then((res: any) => {
           if (res.data.state == 'OK') {
-            msg('添加成功', 'success')
+            msg(res.data.body, 'success')
             queryPairs()
           }else{
-            let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+            let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
             msg(content, "warning")
           }
         }).catch((err: Error) => {
-          msg('请求异常', 'error')
+          msg(langData.axiosRequestErr, 'error')
         })
       } else {
-        msg('参数不对，请检查', 'error');
+        msg(langData.parasInvalidCheck, 'error');
       }
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
   dialogPairFormVisible.value = false
 }
@@ -261,14 +264,14 @@ const delPair = (scope: any) => {
     }
   }).then((res: any) => {
     if (res.data.state == 'OK') {
-      msg('删除成功', 'success')
+      msg(res.data.body, 'success')
       queryPairs()
     }else{
-      let content = '调用 '+res.config.baseURL+res.config.url+': '+res.data.errorMessage;
+      let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
     }
   }).catch((err: Error) => {
-    msg('请求异常', 'error')
+    msg(langData.axiosRequestErr, 'error')
   })
 }
 
@@ -277,66 +280,64 @@ const delPair = (scope: any) => {
 
 <template>
   <div class="container">
-    <el-divider content-position="left">查询条件</el-divider>
     <el-form class="demo-form-inline" :inline="true" size="small">
-      <el-form-item label="应用名" prop="app" placeholder="请输入..." @keyup.enter="queryDicts">
+      <el-form-item :label="langData.dictAppName" prop="app" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts">
         <el-input v-model="form.app"/>
       </el-form-item>
-      <el-form-item label="字典名称" prop="dictName">
-        <el-input v-model="form.dictName" placeholder="请输入..." @keyup.enter="queryDicts"/>
+      <el-form-item :label="langData.dictName" prop="dictName">
+        <el-input v-model="form.dictName" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts"/>
       </el-form-item>
-      <el-form-item label="字典描述" prop="dictDesc">
-        <el-input v-model="form.dictDesc" placeholder="请输入..." @keyup.enter="queryDicts"/>
+      <el-form-item :label="langData.dictDesc" prop="dictDesc">
+        <el-input v-model="form.dictDesc" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts"/>
       </el-form-item>
-      <el-form-item label="来源类型" prop="dictSource">
+      <el-form-item :label="langData.dictSource" prop="dictSource">
         <el-select v-model="form.dictSource" class="m-2" @change="queryDicts">
-          <el-option label="请选择" value="-1"/>
-          <el-option label="固定枚举" value="1"/>
-          <el-option label="数据表枚举" value="2"/>
+          <el-option :label="langData.formSelectPlaceholder" value="-1"/>
+          <el-option :label="langData.fixedSource" value="1"/>
+          <el-option :label="langData.dbSource" value="2"/>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="queryDicts">查询</el-button>
-        <el-button type="warning" @click="reloadDict">重载字典数据</el-button>
-        <el-button type="primary" :icon="Edit" circle @click="showAddDictDialog()" title="添加字典配置"/>
+        <el-button type="primary" @click="queryDicts">{{langData.btnSearch}}</el-button>
+        <el-button type="warning" @click="reloadDict">{{langData.reloadDictData}}</el-button>
+        <el-button type="primary" :icon="Edit" circle @click="showAddDictDialog()" :title="langData.addDictTitle"/>
       </el-form-item>
     </el-form>
 
-    <el-divider content-position="left">字典列表</el-divider>
     <el-table :data="data.dictList" style="width: 100%" :border="true" table-layout="fixed" :stripe="true" size="small"
               :highlight-current-row="true" :header-cell-style="headerCellStyle">
-      <el-table-column fixed="left" label="操作" width="100" header-align="center" align="center">
+      <el-table-column fixed="left" :label="langData.tableHeaderOp" width="100" header-align="center" align="center">
         <template #default="scope">
           <el-button link type="primary" size="small" @click="showEditDictDialog(scope)"
-                     v-if="scope.row.app==data.app">编辑
+                     v-if="scope.row.app==data.app">{{langData.btnEdit}}
           </el-button>
           <el-button link type="primary" size="small" @click="showEditDictDialog(scope)"
-                     v-else>查看
+                     v-else>{{langData.btnDetail}}
           </el-button>
-          <el-popconfirm title="你确定要删除本条记录吗?" @confirm="delDict(scope)"
+          <el-popconfirm :title="langData.confirmDelete" @confirm="delDict(scope)"
                          icon-color="red"
                          confirm-button-type="danger">
             <template #reference>
-              <el-button link type="danger" size="small" v-if="scope.row.app==data.app">删除</el-button>
+              <el-button link type="danger" size="small" v-if="scope.row.app==data.app">{{langData.btnDelete}}</el-button>
             </template>
           </el-popconfirm>
         </template>
       </el-table-column>
-      <el-table-column prop="dictName" label="字典名称" width="150" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="dictName" :label="langData.dictName" width="150" :show-overflow-tooltip="true" header-align="center"
                        align="left"/>
-      <el-table-column prop="dictDesc" label="字典描述" width="150" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="dictDesc" :label="langData.dictDesc" width="150" :show-overflow-tooltip="true" header-align="center"
                        align="left"/>
-      <el-table-column prop="fmtDictSource" label="来源类型" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="fmtDictSource" :label="langData.dictSource" :show-overflow-tooltip="true" header-align="center"
                        align="center"/>
-      <el-table-column prop="keyColumn" label="KEY取值类型" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="keyColumn" :label="langData.keyWay" :show-overflow-tooltip="true" header-align="center"
                        align="center"/>
-      <el-table-column prop="valColumn" label="Value取值类型" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="valColumn" :label="langData.valueWay" :show-overflow-tooltip="true" header-align="center"
                        align="center"/>
-      <el-table-column prop="dictNum" label="固定枚举数量" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="dictNum" :label="langData.fixedNum" :show-overflow-tooltip="true" header-align="center"
                        align="center"/>
-      <el-table-column prop="sqlContent" label="SQL枚举语句" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="sqlContent" :label="langData.dbSql" :show-overflow-tooltip="true" header-align="center"
                        align="left"/>
-      <el-table-column prop="app" label="创建应用" width="150" :show-overflow-tooltip="true" header-align="center"
+      <el-table-column prop="app" :label="langData.createApp" width="150" :show-overflow-tooltip="true" header-align="center"
                        align="center"/>
     </el-table>
     <el-pagination class="page" v-model:page-size="form.pageSize" v-model:current-page="form.pageNum"
@@ -346,53 +347,53 @@ const delPair = (scope: any) => {
                    :small="true" :background="true"
                    :page-sizes="[5, 10, 20, 50, 100]"/>
 
-    <el-dialog v-model="dialogFormVisible" title="编辑属性">
+    <el-dialog v-model="dialogFormVisible" :title="langData.editProperty">
       <el-form :model="dictInfo" :label-width="formLabelWidth" label-position="right" size="small" inline>
-        <el-divider content-position="left">基础信息</el-divider>
-        <el-form-item label="字典名称：" style="width: 40%">
+        <el-divider content-position="left">{{langData.baseInfo}}</el-divider>
+        <el-form-item :label="langData.dictName" style="width: 40%">
           <el-input v-model="dictInfo.dictName" type="text" :disabled="dictInfo.disabled"/>
         </el-form-item>
-        <el-form-item label="字典描述：" style="width: 40%">
+        <el-form-item :label="langData.dictDesc" style="width: 40%">
           <el-input v-model="dictInfo.dictDesc" type="text"/>
         </el-form-item>
-        <el-form-item label="字典来源：" style="width: 40%">
+        <el-form-item :label="langData.dictSource" style="width: 40%">
           <el-select v-model="dictInfo.dictSource" class="m-2" :disabled="dictInfo.disabled">
-            <el-option label="固定枚举" value="1"/>
-            <el-option label="数据表枚举" value="2"/>
+            <el-option :label="langData.fixedSource" value="1"/>
+            <el-option :label="langData.dbSource" value="2"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Key取值类型：" style="width: 40%">
+        <el-form-item :label="langData.keyWay" style="width: 40%">
           <el-select v-model="dictInfo.keyColumn" class="m-2">
             <el-option label="Key" value="key"/>
             <el-option label="Value" value="value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="Value取值类型：" style="width: 40%">
+        <el-form-item :label="langData.valueWay" style="width: 40%">
           <el-select v-model="dictInfo.valColumn" class="m-2">
             <el-option label="Key" value="key"/>
             <el-option label="Value" value="value"/>
           </el-select>
         </el-form-item>
 
-        <el-divider content-position="left">枚举信息</el-divider>
+        <el-divider content-position="left">{{langData.enumInfo}}</el-divider>
         <div v-if="dictInfo.dictSource==1">
           <el-table :data="dictInfo.pairs" style="width: 100%" :border="true" table-layout="fixed" :stripe="true"
                     size="small"
                     :highlight-current-row="true" :header-cell-style="headerCellStyle">
-            <el-table-column fixed="left" label="操作" width="180" header-align="center" align="center">
+            <el-table-column fixed="left" :label="langData.tableHeaderOp" width="180" header-align="center" align="center">
               <template #default="scope">
-                <el-popconfirm title="你确定要删除本条记录吗?" @confirm="delPair(scope)"
+                <el-popconfirm :title="langData.confirmDelete" @confirm="delPair(scope)"
                                icon-color="red"
                                confirm-button-type="danger">
                   <template #reference>
-                    <el-button link type="danger" size="small" v-if="edit">删除</el-button>
+                    <el-button link type="danger" size="small" v-if="edit">{{langData.btnDelete}}</el-button>
                   </template>
                 </el-popconfirm>
               </template>
             </el-table-column>
-            <el-table-column prop="key" label="Key值" :show-overflow-tooltip="true" header-align="center"
+            <el-table-column prop="key" :label="langData.key" :show-overflow-tooltip="true" header-align="center"
                              align="center"/>
-            <el-table-column prop="value" label="Value值" :show-overflow-tooltip="true" header-align="center"
+            <el-table-column prop="value" :label="langData.value" :show-overflow-tooltip="true" header-align="center"
                              align="center"/>
           </el-table>
           <el-pagination class="page" v-model:page-size="dictInfo.pairPageSize"
@@ -403,17 +404,17 @@ const delPair = (scope: any) => {
                          :small="true" :background="true"
                          :page-sizes="[5,10,20,50,100]"/>
           <div class="addBtn">
-            <el-button :icon="Edit" size="small" round @click="showPairDialog" v-if="edit">添加
+            <el-button :icon="Edit" size="small" round @click="showPairDialog" v-if="edit">{{langData.btnAdd}}
             </el-button>
           </div>
         </div>
         <div v-else-if="dictInfo.dictSource==2">
-          <el-form-item label="枚举数据SQL：" :label-width="formLabelWidth" style="width: 85%">
+          <el-form-item :label="langData.dbSql" :label-width="formLabelWidth" style="width: 85%">
             <el-input
                 v-model="dictInfo.sqlContent"
                 :rows="5"
                 type="textarea"
-                placeholder='请输入枚举值查询的sql，注意一定要带上key、value固定别名，比如 select c_key AS "key",c_name AS "value" from h_dict_sql_county'
+                :placeholder="langData.dbSqlPlaceHolder"
             />
           </el-form-item>
         </div>
@@ -421,40 +422,40 @@ const delPair = (scope: any) => {
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button @click="dialogFormVisible = false">{{langData.btnCancel}}</el-button>
           <el-button type="primary" @click="updateDict" v-if="edit">
-            保存
+            {{langData.btnSave}}
           </el-button>
         </span>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="dialogPairFormVisible" title="添加枚举">
+    <el-dialog v-model="dialogPairFormVisible" :title="langData.addEnum">
       <el-form :model="pairInfo" label-position="right" size="small">
-        <el-form-item label="添加方式" :label-width="formLabelWidth" style="width: 80%">
-          <el-select v-model="pairInfo.pairAddWay" placeholder="请选择" size="small">
+        <el-form-item :label="langData.addWay" :label-width="formLabelWidth" style="width: 80%">
+          <el-select v-model="pairInfo.pairAddWay" :placeholder="langData.formSelectPlaceholder" size="small">
             <el-option :label="w.label" :value="w.key" v-for="w in pairAddWays"/>
           </el-select>
         </el-form-item>
         <div v-if="pairInfo.pairAddWay=='1'">
-          <el-form-item label="Key值：" :label-width="formLabelWidth" style="width: 80%">
+          <el-form-item :label="langData.key" :label-width="formLabelWidth" style="width: 80%">
             <el-input v-model="pairInfo.key" type="text"/>
           </el-form-item>
-          <el-form-item label="Value值：" :label-width="formLabelWidth" style="width: 80%">
+          <el-form-item :label="langData.value" :label-width="formLabelWidth" style="width: 80%">
             <el-input v-model="pairInfo.value" type="text"/>
           </el-form-item>
         </div>
         <div v-else>
-          <el-form-item label="批量枚举" prop="pairString" :label-width="formLabelWidth" style="width: 80%">
+          <el-form-item :label="langData.batchEnum" prop="pairString" :label-width="formLabelWidth" style="width: 80%">
             <el-input v-model="pairInfo.pairString" type="textarea" rows="4"/>
           </el-form-item>
         </div>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogPairFormVisible = false">取消</el-button>
+          <el-button @click="dialogPairFormVisible = false">{{langData.btnCancel}}</el-button>
           <el-button type="primary" @click="addPair">
-            添加
+            {{langData.btnAdd}}
           </el-button>
         </span>
       </template>

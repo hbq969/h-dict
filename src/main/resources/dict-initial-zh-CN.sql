@@ -1,3 +1,7 @@
+delete from h_dict_base where dict_name in ('dict_source','county','enabled');
+delete from h_dict_pairs where dict_name in ('dict_source','county','enabled');
+truncate table h_dict_sql_county;
+
 insert into h_dict_base(dict_name,dict_desc,dict_source,key_column,val_column) values('dict_source','字典数据来源',1,'key','value');
 insert into h_dict_base(dict_name,dict_desc,dict_source,key_column,val_column) values('county','国家',2,'key','value');
 insert into h_dict_base(dict_name,dict_desc,dict_source,key_column,val_column) values('enabled','启停状态',1,'key','value');

@@ -1,7 +1,11 @@
 package com.github.hbq969.code.dict.service.api.impl;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.github.hbq969.code.common.initial.ScriptInitialAware;
 import com.github.hbq969.code.common.spring.context.SpringContext;
+import com.github.hbq969.code.common.spring.i18n.LangInfo;
+import com.github.hbq969.code.common.spring.i18n.LanguageEvent;
+import com.github.hbq969.code.common.utils.GsonUtils;
 import com.github.hbq969.code.common.utils.InitScriptUtils;
 import com.github.hbq969.code.dict.config.DictConf;
 import com.github.hbq969.code.dict.dao.DictDao;
@@ -13,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
  * @createTime : 2024/5/11 17:58
  */
 @Slf4j
-public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
+public class MapDictHelperImpl implements DictHelper<Map>, ScriptInitialAware {
 
     private volatile Map<String, Map<String, String>> pairsMap = new HashMap<>(2 << 8);
 
@@ -47,44 +50,6 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
         this.jt = context.getBean(JdbcTemplate.class);
         this.dictDao = context.getBean("h-dict-DictDao", DictDao.class);
         this.conf = context.getBean(DictConf.class);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        dictInit();
-        reloadImmediately();
-    }
-
-    private void dictInit() {
-        try {
-            this.dictDao.createDictBase();
-        } catch (Exception e) {
-            if (log.isTraceEnabled()) {
-                log.trace("h_dict_base已存在");
-            }
-        }
-        try {
-            this.dictDao.createDictPairs();
-        } catch (Exception e) {
-            if (log.isTraceEnabled()) {
-                log.trace("h_dict_pairs已存在");
-            }
-        }
-        try {
-            this.dictDao.createDictSql();
-        } catch (Exception e) {
-            if (log.isTraceEnabled()) {
-                log.trace("h_dict_sql已存在");
-            }
-        }
-        try {
-            this.dictDao.createDictSqlCounty();
-        } catch (Exception e) {
-            if (log.isTraceEnabled()) {
-                log.trace("h_dict_sql_county已存在");
-            }
-        }
-        InitScriptUtils.initial(context, "h-dict-data.sql", StandardCharsets.UTF_8, null, null);
     }
 
     @Override
@@ -278,5 +243,66 @@ public class MapDictHelperImpl implements DictHelper<Map>, InitializingBean {
                 }
             }
         }
+    }
+
+    @Override
+    public String nameOfScriptInitialAware() {
+        return "h-dict-script-initial";
+    }
+
+    @Override
+    public void tableCreate() {
+        try {
+            this.dictDao.createDictBase();
+            log.debug("h_dict_base创建成功");
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug("h_dict_base已存在");
+            }
+        }
+        try {
+            this.dictDao.createDictPairs();
+            log.debug("h_dict_pairs创建成功");
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug("h_dict_pairs已存在");
+            }
+        }
+        try {
+            this.dictDao.createDictSql();
+            log.debug("h_dict_sql创建成功");
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug("h_dict_sql已存在");
+            }
+        }
+        try {
+            this.dictDao.createDictSqlCounty();
+            log.debug("h_dict_sql_county创建成功");
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug("h_dict_sql_county已存在");
+            }
+        }
+    }
+
+    @Override
+    public void scriptInitial() {
+        InitScriptUtils.initial(context, "dict-initial-zh-CN.sql", StandardCharsets.UTF_8, null, () -> reloadImmediately());
+    }
+
+    @Override
+    public void onApplicationEvent(LanguageEvent event) {
+        LangInfo langInfo = (LangInfo) event.getSource();
+        if (log.isDebugEnabled())
+            log.debug("h-dict监听到语言切换: {}", GsonUtils.toJson(langInfo));
+        String lang = langInfo.getLang();
+        String filename = String.join("", "dict-initial-", lang, ".sql");
+        InitScriptUtils.initial(context, filename, StandardCharsets.UTF_8, null, () -> reloadImmediately());
+    }
+
+    @Override
+    public int orderOfScriptInitialAware() {
+        return -200;
     }
 }
