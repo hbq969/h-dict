@@ -11,7 +11,7 @@
             `val_column`  varchar(10) default 'val' comment '字典枚举key取值类型, 支持key、val',
             `app` varchar(200) default 'common' comment '字典是哪个应用创建的'
         ) ENGINE = InnoDB
-          DEFAULT CHARSET = utf8
+          DEFAULT CHARSET = utf8mb3
     </update>
 
     <update id="createDictPairs">
@@ -22,7 +22,7 @@
             `pair_value` varchar(255),
             primary key (`dict_name`, `pair_key`)
         ) ENGINE = InnoDB
-          DEFAULT CHARSET = utf8
+          DEFAULT CHARSET = utf8mb3
     </update>
 
     <update id="createDictSql">
@@ -31,7 +31,7 @@
             `dict_name`   varchar(200) primary key,
             `sql_content` varchar(500)
         ) ENGINE = InnoDB
-          DEFAULT CHARSET = utf8
+          DEFAULT CHARSET = utf8mb3
     </update>
 
     <update id="createDictSqlCounty">
@@ -40,6 +40,6 @@
             `c_key`  varchar(50) primary key,
             `c_name` varchar(50) not null
         ) ENGINE = InnoDB
-          DEFAULT CHARSET = utf8
+          DEFAULT CHARSET = utf8mb3
     </update>
 </mapper>
