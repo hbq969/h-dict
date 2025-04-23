@@ -6,6 +6,7 @@ import com.github.hbq969.code.dict.service.api.DictHelper;
 import com.github.hbq969.code.dict.service.api.DictModel;
 import com.github.hbq969.code.dict.service.api.Td;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
@@ -76,13 +77,18 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
     public void tranForDict(DictModel data) {
         Class<?> clz = data.getClass();
         Field[] fs = clz.getDeclaredFields();
+        String fn;
         for (Field f : fs) {
             if (f.isAnnotationPresent(Td.class)) {
                 Td td = f.getAnnotation(Td.class);
-                if (td.enable() && isDict(f.getName())) {
+                fn=f.getName();
+                if(StringUtils.isNotEmpty(td.dictName())){
+                    fn=td.dictName();
+                }
+                if (td.enable() && isDict(fn)) {
                     try {
                         f.setAccessible(true);
-                        String value = queryValue(f.getName(), String.valueOf(f.get(data)));
+                        String value = queryValue(fn, String.valueOf(f.get(data)));
                         String fmtFd = td.fmtFieldName();
                         Field fmtF = clz.getDeclaredField(fmtFd);
                         fmtF.setAccessible(true);

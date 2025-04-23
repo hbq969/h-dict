@@ -21,6 +21,12 @@ public @interface Td {
     boolean enable() default true;
 
     /**
+     * 字典名称
+     * @return
+     */
+    String dictName() default "";
+
+    /**
      * 转义后的字段名称
      *
      * @return
