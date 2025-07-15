@@ -1,7 +1,7 @@
 package com.github.hbq969.code.dict.service.api.impl;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.github.hbq969.code.common.initial.ScriptInitialAware;
+import com.github.hbq969.code.common.initial.AbstractScriptInitialAware;
 import com.github.hbq969.code.common.spring.context.SpringContext;
 import com.github.hbq969.code.common.spring.i18n.LangInfo;
 import com.github.hbq969.code.common.spring.i18n.LanguageEvent;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @createTime : 2024/5/11 17:58
  */
 @Slf4j
-public class MapDictHelperImpl implements DictHelper<Map>, ScriptInitialAware {
+public class MapDictHelperImpl extends AbstractScriptInitialAware implements DictHelper<Map> {
 
     private volatile Map<String, Map<String, String>> pairsMap = new HashMap<>(2 << 8);
 
@@ -251,7 +251,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, ScriptInitialAware {
     }
 
     @Override
-    public void tableCreate() {
+    protected void tableCreate0() {
         try {
             this.dictDao.createDictBase();
             log.debug("h_dict_base创建成功");
@@ -287,7 +287,7 @@ public class MapDictHelperImpl implements DictHelper<Map>, ScriptInitialAware {
     }
 
     @Override
-    public void scriptInitial() {
+    protected void scriptInitial0() {
         InitScriptUtils.initial(context, "dict-initial-zh-CN.sql", StandardCharsets.UTF_8, null, () -> reloadImmediately());
     }
 
