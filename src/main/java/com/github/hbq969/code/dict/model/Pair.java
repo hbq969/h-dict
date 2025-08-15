@@ -2,7 +2,7 @@ package com.github.hbq969.code.dict.model;
 
 import com.github.hbq969.code.common.lang.ICheck;
 import com.github.hbq969.code.common.spring.context.SpringContext;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,11 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 @Data
 public class Pair implements ICheck {
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private int pairAddWay;
     private String key;
     private String value;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private String pairString;
 
     @Override

@@ -17,8 +17,9 @@ import com.github.hbq969.code.dict.service.api.impl.MapDictHelperImpl;
 import com.github.hbq969.code.sm.perm.api.SMRequiresPermissions;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +33,7 @@ import java.util.List;
  * @createTime : 2024/5/14 15:39
  */
 @RequestMapping(path = "/hbq969-dict")
-@Api(tags = "维护使用-字典管理接口")
+@Tag(name = "维护使用-字典管理接口")
 @Slf4j
 public class DictControl implements ICommonControl {
 
@@ -48,7 +49,7 @@ public class DictControl implements ICommonControl {
     @Autowired
     private SpringContext context;
 
-    @ApiOperation("字典分页查询")
+    @Operation(summary = "字典分页查询")
     @RequestMapping(path = "/queryDicts", method = RequestMethod.POST)
     @ResponseBody
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "queryDicts",apiDesc = "字典分页查询")
@@ -61,7 +62,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(ad);
     }
 
-    @ApiOperation("删除字典信息")
+    @Operation(summary = "删除字典信息")
     @RequestMapping(path = "/delDict", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
@@ -71,7 +72,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(I18nUtils.getMessage(context,"delete.result"));
     }
 
-    @ApiOperation("新增、更新字典基本信息")
+    @Operation(summary = "新增、更新字典基本信息")
     @RequestMapping(path = "/updateDict", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
@@ -81,7 +82,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(I18nUtils.getMessage(context,"update.result"));
     }
 
-    @ApiOperation("字典固定枚举值分页查询")
+    @Operation(summary = "字典固定枚举值分页查询")
     @RequestMapping(path = "/queryPairs", method = RequestMethod.GET)
     @ResponseBody
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "queryPairs",apiDesc = "字典固定枚举值分页查询")
@@ -93,7 +94,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(pi);
     }
 
-    @ApiOperation("重载字典数据")
+    @Operation(summary = "重载字典数据")
     @RequestMapping(path = "/reloadDict", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
@@ -103,7 +104,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(I18nUtils.getMessage(context,"op.result"));
     }
 
-    @ApiOperation("保存固定枚举值")
+    @Operation(summary = "保存固定枚举值")
     @RequestMapping(path = "/addPair", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
@@ -113,7 +114,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(I18nUtils.getMessage(context,"save.result"));
     }
 
-    @ApiOperation("删除固定枚举值")
+    @Operation(summary = "删除固定枚举值")
     @RequestMapping(path = "/delPair", method = RequestMethod.POST)
     @ResponseBody
     @Log(collectResult = true)
@@ -123,7 +124,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(I18nUtils.getMessage(context,"delete.result"));
     }
 
-    @ApiOperation("查询字典基本信息是否存在")
+    @Operation(summary = "查询字典基本信息是否存在")
     @RequestMapping(path = "/queryDict", method = RequestMethod.GET)
     @ResponseBody
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "queryDict",apiDesc = "查询字典基本信息是否存在")
@@ -131,7 +132,7 @@ public class DictControl implements ICommonControl {
         return ReturnMessage.success(dictService.queryDict(dn));
     }
 
-    @ApiOperation("测试字典转义")
+    @Operation(summary = "测试字典转义")
     @RequestMapping(path = "/dictTransCheck", method = RequestMethod.POST)
     @ResponseBody
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "dictTransCheck",apiDesc = "测试字典转义")
