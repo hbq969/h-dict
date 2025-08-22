@@ -23,37 +23,6 @@ spring:
     interceptors:
       mdc:
         enabled: true
-      api-safe:
-        enabled: false
-      resource-handler-registry:
-        entries:
-          - handlers: /hbq969-dict/**
-            locations: classpath:/static/hbq969-dict/
-        enabled: true
-      login:
-        enabled: false
-        cookie-max-age-sec: 1800
-        dialect: embedded
-        include-urls:
-          - "/hbq969-sm/**"
-          - "/hbq969-dict/**"
-          - "/hbq969-tabula/**"
-          - "/common/encrypt/**"
-          - "/ui-gw/**"
-          - "/**/doc.html"
-          - "/**/swagger-ui.html"
-          - "/**/api-docs"
-        exclude-urls:
-          - "/**/error"
-          - "/common/health"
-          - "/hbq969-sm/index.html"
-          - "/hbq969-sm/**/*.js"
-          - "/hbq969-sm/**/*.css"
-          - "/hbq969-sm/**/*.png"
-          - "/hbq969-sm/**/*.jpg"
-          - "/hbq969-sm/**/*.map"
-          - "/hbq969-sm/**/*.ico"
-          - "/hbq969-sm/**/login"
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
