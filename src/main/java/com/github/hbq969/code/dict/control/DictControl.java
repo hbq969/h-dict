@@ -1,10 +1,10 @@
 package com.github.hbq969.code.dict.control;
 
+import cn.hutool.core.lang.Assert;
 import com.github.hbq969.code.common.log.api.Log;
 import com.github.hbq969.code.common.restful.ICommonControl;
 import com.github.hbq969.code.common.restful.ReturnMessage;
 import com.github.hbq969.code.common.spring.context.SpringContext;
-import com.github.hbq969.code.common.utils.I18nUtils;
 import com.github.hbq969.code.dict.control.vo.DictPair;
 import com.github.hbq969.code.dict.control.vo.QueryDict;
 import com.github.hbq969.code.dict.control.vo.QueryTran;
@@ -23,9 +23,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author : hbq969@gmail.com
@@ -69,7 +71,7 @@ public class DictControl implements ICommonControl {
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "delDict",apiDesc = "删除字典信息")
     public ReturnMessage<?> delDict(@RequestBody Dict dict) {
         dictService.delDict(dict);
-        return ReturnMessage.success(I18nUtils.getMessage(context,"delete.result"));
+        return ReturnMessage.success(getMessage(context,"delete.result"));
     }
 
     @Operation(summary = "新增、更新字典基本信息")
@@ -79,7 +81,7 @@ public class DictControl implements ICommonControl {
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "updateDict",apiDesc = "新增、更新字典基本信息")
     public ReturnMessage<?> updateDict(@RequestBody SqlDict dict) {
         dictService.updateDict(dict);
-        return ReturnMessage.success(I18nUtils.getMessage(context,"update.result"));
+        return ReturnMessage.success(getMessage(context,"update.result"));
     }
 
     @Operation(summary = "字典固定枚举值分页查询")
@@ -101,7 +103,7 @@ public class DictControl implements ICommonControl {
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "reloadDict",apiDesc = "重载字典数据")
     public ReturnMessage<?> reloadDict() {
         mapDictHelper.reloadImmediately();
-        return ReturnMessage.success(I18nUtils.getMessage(context,"op.result"));
+        return ReturnMessage.success(getMessage(context,"op.result"));
     }
 
     @Operation(summary = "保存固定枚举值")
@@ -111,7 +113,7 @@ public class DictControl implements ICommonControl {
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "addPair",apiDesc = "保存固定枚举值")
     public ReturnMessage<?> addPair(@RequestBody DictPair pair) {
         dictService.addPair(pair);
-        return ReturnMessage.success(I18nUtils.getMessage(context,"save.result"));
+        return ReturnMessage.success(getMessage(context,"save.result"));
     }
 
     @Operation(summary = "删除固定枚举值")
@@ -121,7 +123,7 @@ public class DictControl implements ICommonControl {
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "delPair",apiDesc = "删除固定枚举值")
     public ReturnMessage<?> delPair(@RequestBody DictPair pair) {
         dictService.delPair(pair);
-        return ReturnMessage.success(I18nUtils.getMessage(context,"delete.result"));
+        return ReturnMessage.success(getMessage(context,"delete.result"));
     }
 
     @Operation(summary = "查询字典基本信息是否存在")
@@ -138,5 +140,16 @@ public class DictControl implements ICommonControl {
     @SMRequiresPermissions(menu = "Dictionary",apiKey = "dictTransCheck",apiDesc = "测试字典转义")
     public ReturnMessage<?> dictTransCheck(@RequestBody QueryTran q) {
         return ReturnMessage.success(mapDictHelper.queryValue(q.getDn(), q.getPairKey()));
+    }
+
+    public static String getMessage(SpringContext context, String code, Object[] args) {
+        MessageSource messageSource = context.getBean(MessageSource.class);
+        Assert.notNull(messageSource, "Not inject MessageSource");
+        String lang = context.getProperty("spring.mvc.interceptors.login.sm-initial-script.language", "zh-CN");
+        return messageSource.getMessage(code, args, Locale.forLanguageTag(lang));
+    }
+
+    public static String getMessage(SpringContext context, String code) {
+        return getMessage(context, code, null);
     }
 }
