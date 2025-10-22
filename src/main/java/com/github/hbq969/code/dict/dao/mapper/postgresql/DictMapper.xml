@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.hbq969.code.dict.dao.DictDao">
+    <update id="createDictBase">
+        CREATE TABLE IF NOT EXISTS h_dict_base
+        (
+            dict_name   VARCHAR(200) PRIMARY KEY,
+            dict_desc   VARCHAR(200) NOT NULL,
+            dict_source INTEGER      default 1,
+            key_column  VARCHAR(10)  DEFAULT 'key',
+            val_column  VARCHAR(10)  DEFAULT 'val',
+            app         VARCHAR(200) DEFAULT 'common'
+        )
+    </update>
+
+    <update id="createDictPairs">
+        CREATE TABLE IF NOT EXISTS h_dict_pairs
+        (
+            dict_name  VARCHAR(200),
+            pair_key   VARCHAR(255),
+            pair_value VARCHAR(255),
+            PRIMARY KEY (dict_name, pair_key)
+        )
+    </update>
+
+    <update id="createDictSql">
+        CREATE TABLE IF NOT EXISTS h_dict_sql
+        (
+            dict_name   VARCHAR(200) PRIMARY KEY,
+            sql_content VARCHAR(500)
+        )
+    </update>
+
+    <update id="createDictSqlCounty">
+        CREATE TABLE IF NOT EXISTS h_dict_sql_county
+        (
+            c_key  VARCHAR(50) PRIMARY KEY,
+            c_name VARCHAR(50) NOT NULL
+        )
+    </update>
+</mapper>
