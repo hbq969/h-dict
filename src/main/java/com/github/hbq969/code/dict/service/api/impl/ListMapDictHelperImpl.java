@@ -111,4 +111,24 @@ public class ListMapDictHelperImpl implements DictHelper<List<Map>> {
             });
         }
     }
+
+    @Override
+    public Map<Integer, String> queryPairsToIntKey(String dn) {
+        return this.proxy.queryPairsToIntKey(dn);
+    }
+
+    @Override
+    public Map<Integer, String> queryPairsToIntKey(String dn, boolean flip) {
+        return this.proxy.queryPairsToIntKey(dn, flip);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryPairListToIntKey(String dn) {
+        return this.proxy.queryPairListToIntKey(dn);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryPairListToIntKey(String dn, boolean flip) {
+        return this.proxy.queryPairListToIntKey(dn, flip);
+    }
 }

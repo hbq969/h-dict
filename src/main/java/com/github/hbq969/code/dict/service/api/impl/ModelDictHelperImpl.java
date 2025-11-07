@@ -81,9 +81,9 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
         for (Field f : fs) {
             if (f.isAnnotationPresent(Td.class)) {
                 Td td = f.getAnnotation(Td.class);
-                fn=f.getName();
-                if(StringUtils.isNotEmpty(td.dictName())){
-                    fn=td.dictName();
+                fn = f.getName();
+                if (StringUtils.isNotEmpty(td.dictName())) {
+                    fn = td.dictName();
                 }
                 if (td.enable() && isDict(fn)) {
                     try {
@@ -109,5 +109,25 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
     @Override
     public void tranForDict(DictModel data, String... fs) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<Integer, String> queryPairsToIntKey(String dn) {
+        return this.mapDict.queryPairsToIntKey(dn);
+    }
+
+    @Override
+    public Map<Integer, String> queryPairsToIntKey(String dn, boolean flip) {
+        return this.mapDict.queryPairsToIntKey(dn, flip);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryPairListToIntKey(String dn) {
+        return this.mapDict.queryPairListToIntKey(dn);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryPairListToIntKey(String dn, boolean flip) {
+        return this.mapDict.queryPairListToIntKey(dn, flip);
     }
 }

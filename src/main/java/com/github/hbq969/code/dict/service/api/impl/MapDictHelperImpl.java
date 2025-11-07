@@ -1,5 +1,7 @@
 package com.github.hbq969.code.dict.service.api.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.github.hbq969.code.common.initial.AbstractScriptInitialAware;
 import com.github.hbq969.code.common.spring.context.SpringContext;
@@ -83,13 +85,28 @@ public class MapDictHelperImpl extends AbstractScriptInitialAware implements Dic
 
     @Override
     public Map<String, String> queryPairs(String dictName) {
-        return this.pairsMap.get(dictName);
+        Map<String, String> m = this.pairsMap.get(dictName);
+        return m == null ? Collections.emptyMap() : m;
+    }
+
+    @Override
+    public Map<Integer, String> queryPairsToIntKey(String dn) {
+        Map<String, String> map = queryPairs(dn);
+        if (MapUtil.isEmpty(map))
+            return Collections.emptyMap();
+        Map<Integer, String> nm = new LinkedHashMap<>(map.size());
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            nm.put(Integer.valueOf(e.getKey()), e.getValue());
+        }
+        return nm;
     }
 
     @Override
     public Map<String, String> queryPairs(String dictName, boolean flip) {
         if (flip) {
             Map<String, String> map = queryPairs(dictName);
+            if (MapUtil.isEmpty(map))
+                return Collections.emptyMap();
             Map<String, String> fm = new HashMap<>(CollectionUtils.size(map));
             for (Map.Entry<String, String> e : map.entrySet()) {
                 fm.put(e.getValue(), e.getKey());
@@ -98,6 +115,18 @@ public class MapDictHelperImpl extends AbstractScriptInitialAware implements Dic
         } else {
             return queryPairs(dictName);
         }
+    }
+
+    @Override
+    public Map<Integer, String> queryPairsToIntKey(String dn, boolean flip) {
+        Map<String, String> map = queryPairs(dn, flip);
+        if (MapUtil.isEmpty(map))
+            return Collections.emptyMap();
+        Map<Integer, String> nm = new LinkedHashMap<>(map.size());
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            nm.put(Integer.valueOf(e.getKey()), e.getValue());
+        }
+        return nm;
     }
 
     @Override
@@ -114,6 +143,21 @@ public class MapDictHelperImpl extends AbstractScriptInitialAware implements Dic
             pairList.add(p);
         }
         return pairList;
+    }
+
+    @Override
+    public List<Map<String, Object>> queryPairListToIntKey(String dn) {
+        List<Pair> pairList = queryPairList(dn);
+        if (CollectionUtil.isEmpty(pairList))
+            return Collections.emptyList();
+        List<Map<String, Object>> list = new ArrayList<>(pairList.size());
+        for (Pair pair : pairList) {
+            Map<String, Object> nm = new HashMap<>();
+            nm.put("key", Integer.valueOf(pair.getKey()));
+            nm.put("value", pair.getValue());
+            list.add(nm);
+        }
+        return list;
     }
 
     @Override
@@ -134,6 +178,21 @@ public class MapDictHelperImpl extends AbstractScriptInitialAware implements Dic
         } else {
             return queryPairList(dictName);
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> queryPairListToIntKey(String dn, boolean flip) {
+        List<Pair> pairList = queryPairList(dn, flip);
+        if (CollectionUtil.isEmpty(pairList))
+            return Collections.emptyList();
+        List<Map<String, Object>> list = new ArrayList<>(pairList.size());
+        for (Pair pair : pairList) {
+            Map<String, Object> nm = new HashMap<>();
+            nm.put("key", Integer.valueOf(pair.getKey()));
+            nm.put("value", pair.getValue());
+            list.add(nm);
+        }
+        return list;
     }
 
     @EventListener(DictChangeEvent.class)
