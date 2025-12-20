@@ -1,6 +1,7 @@
 package com.github.hbq969.code.dict.config;
 
 import com.github.hbq969.code.common.spring.context.SpringContext;
+import com.github.hbq969.code.dict.control.DictApiCtrl;
 import com.github.hbq969.code.dict.control.DictControl;
 import com.github.hbq969.code.dict.service.api.impl.*;
 import com.github.hbq969.code.dict.service.spi.impl.DictManageFacade;
@@ -31,6 +32,12 @@ public class DictConfig {
     @Bean
     DictControl dictControl() {
         return new DictControl();
+    }
+
+    @ConditionalOnExpression("${dict.enabled:false}")
+    @Bean
+    DictApiCtrl dictApiCtrl() {
+        return new DictApiCtrl();
     }
 
     @ConditionalOnExpression("${dict.enabled:false}")
