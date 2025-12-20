@@ -26,4 +26,6 @@ public class DictConf {
      * 重载配置
      */
     private ReloadConf reload;
+
+    private String dictCtrlPrefix = "/hbq969-dict";
 }
