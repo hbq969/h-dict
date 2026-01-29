@@ -18,7 +18,7 @@
         (
             dict_name varchar2 (200),
             pair_key varchar2 (255),
-            pair_value varchar2 (255),
+            pair_value varchar2 (2000),
             primary key (dict_name, pair_key)
         )
     </update>
