@@ -19,7 +19,7 @@
         (
             `dict_name`  varchar(200),
             `pair_key`   varchar(255),
-            `pair_value` varchar(255),
+            `pair_value` varchar(2000),
             primary key (`dict_name`, `pair_key`)
         ) ENGINE = InnoDB
           DEFAULT CHARSET = utf8mb3

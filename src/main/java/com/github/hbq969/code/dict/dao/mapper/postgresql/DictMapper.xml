@@ -18,7 +18,7 @@
         (
             dict_name  VARCHAR(200),
             pair_key   VARCHAR(255),
-            pair_value VARCHAR(255),
+            pair_value VARCHAR(2000),
             PRIMARY KEY (dict_name, pair_key)
         )
     </update>
