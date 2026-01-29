@@ -5,6 +5,7 @@ import com.github.hbq969.code.dict.model.Pair;
 import com.github.hbq969.code.dict.service.api.DictHelper;
 import com.github.hbq969.code.dict.service.api.DictModel;
 import com.github.hbq969.code.dict.service.api.Td;
+import com.github.hbq969.code.dict.service.api.Tds;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,26 +78,35 @@ public class ModelDictHelperImpl implements DictHelper<DictModel> {
     public void tranForDict(DictModel data) {
         Class<?> clz = data.getClass();
         Field[] fs = clz.getDeclaredFields();
-        String fn;
         for (Field f : fs) {
-            if (f.isAnnotationPresent(Td.class)) {
+            if (f.isAnnotationPresent(Tds.class)) {
+                Td[] tds = f.getAnnotation(Tds.class).value();
+                for (Td td : tds) {
+                    tranFieldByTd(td, data, f, clz);
+                }
+            } else if (f.isAnnotationPresent(Td.class)) {
                 Td td = f.getAnnotation(Td.class);
-                fn = f.getName();
-                if (StringUtils.isNotEmpty(td.dictName())) {
-                    fn = td.dictName();
-                }
-                if (td.enable() && isDict(fn)) {
-                    try {
-                        f.setAccessible(true);
-                        String value = queryValue(fn, String.valueOf(f.get(data)));
-                        String fmtFd = td.fmtFieldName();
-                        Field fmtF = clz.getDeclaredField(fmtFd);
-                        fmtF.setAccessible(true);
-                        fmtF.set(data, value);
-                    } catch (Exception e) {
-                        log.warn("转义异常，待转义字段[{}], 转义后字段[{}]", f.getName(), td.fmtFieldName());
-                    }
-                }
+                tranFieldByTd(td, data, f, clz);
+            }
+        }
+    }
+
+    private void tranFieldByTd(Td td, DictModel data, Field f, Class<?> clz) {
+        String fn;
+        fn = f.getName();
+        if (StringUtils.isNotEmpty(td.dictName())) {
+            fn = td.dictName();
+        }
+        if (td.enable() && isDict(fn)) {
+            try {
+                f.setAccessible(true);
+                String value = queryValue(fn, String.valueOf(f.get(data)));
+                String fmtFd = td.fmtFieldName();
+                Field fmtF = clz.getDeclaredField(fmtFd);
+                fmtF.setAccessible(true);
+                fmtF.set(data, value);
+            } catch (Exception e) {
+                log.warn("转义异常，待转义字段[{}], 转义后字段[{}]", f.getName(), td.fmtFieldName());
             }
         }
     }
