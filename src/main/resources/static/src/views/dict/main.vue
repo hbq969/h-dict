@@ -162,11 +162,6 @@ const updateDict = () => {
   })
 }
 
-const headerCellStyle = () => {
-  // 添加表头颜色
-  return {backgroundColor: '#f5f5f5', color: '#333', fontWeight: 'bold'};
-}
-
 onMounted(() => {
   console.log('页面加载后')
   queryDicts()
@@ -305,7 +300,7 @@ const delPair = (scope: any) => {
     </el-form>
 
     <el-table :data="data.dictList" style="width: 100%" :border="true" table-layout="fixed" :stripe="true" size="small"
-              :highlight-current-row="true" :header-cell-style="headerCellStyle">
+              :highlight-current-row="true">
       <el-table-column fixed="left" :label="langData.tableHeaderOp" width="100" header-align="center" align="center">
         <template #default="scope">
           <el-button link type="primary" size="small" @click="showEditDictDialog(scope)"
@@ -379,7 +374,7 @@ const delPair = (scope: any) => {
         <div v-if="dictInfo.dictSource==1">
           <el-table :data="dictInfo.pairs" style="width: 100%" :border="true" table-layout="fixed" :stripe="true"
                     size="small"
-                    :highlight-current-row="true" :header-cell-style="headerCellStyle">
+                    :highlight-current-row="true">
             <el-table-column fixed="left" :label="langData.tableHeaderOp" width="180" header-align="center" align="center">
               <template #default="scope">
                 <el-popconfirm :title="langData.confirmDelete" @confirm="delPair(scope)"
@@ -467,9 +462,9 @@ const delPair = (scope: any) => {
 <style scoped>
 .container {
   flex-grow: 1;
-  padding: 20px 5%;
+  padding: 20px 20px;
   overflow: auto;
-  width: 80%;
+  width: 100%;
 
 }
 

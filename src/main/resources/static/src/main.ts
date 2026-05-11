@@ -1,10 +1,12 @@
 import {createApp} from 'vue'
 import ElementPlus from 'element-plus'
+import { useDark } from '@/utils/theme'
 import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import './assets/css/base.css'
+import '@/utils/theme'
 
 const zhCn = require('element-plus/dist/locale/zh-cn.min.js')
 

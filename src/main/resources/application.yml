@@ -49,14 +49,11 @@ knife4j:
     password: 123456
 
 swagger:
+  enabled: true
   base-package: com
   api-info:
-    title: web应用Restful API
-    description: web应用Restful API
-    termsOfServiceUrl: http://127.0.0.1:${server.port}
-    version: v1.0
-    license: Apache LICENSE-2.0
-    licenseUrl: https://apache.org/licenses/LICENSE-2.0.txt
+    title: api-gateway dashboard api接口
+    description: 维护管理接口
 
 dict:
   enabled: true
