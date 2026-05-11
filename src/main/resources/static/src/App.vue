@@ -1,100 +1,5 @@
 <template>
   <div class="common-layout">
-    <!--    <el-container>-->
-    <!--      <el-header height="30px">-->
-    <!--        <span>HMIS微服务管理平台</span>-->
-    <!--        <div>-->
-    <!--          <el-popover-->
-    <!--              ref="popover"-->
-    <!--              placement="bottom"-->
-    <!--              :title="userInfo"-->
-    <!--              :width="200"-->
-    <!--              trigger="hover"-->
-    <!--          >-->
-    <!--            <template #reference>-->
-    <!--              <el-icon style="cursor: pointer">-->
-    <!--                <More/>-->
-    <!--              </el-icon>-->
-    <!--            </template>-->
-    <!--            <div style="display: flex">-->
-    <!--              <el-button type="info" :icon="SwitchButton" circle title="注销"/>-->
-    <!--            </div>-->
-
-
-    <!--          </el-popover>-->
-    <!--        </div>-->
-    <!--      </el-header>-->
-    <!--      <el-container>-->
-    <!--        <el-aside width="200px">-->
-    <!--          <el-scrollbar>-->
-    <!--            <el-menu-->
-    <!--                :default-active="activeIndex"-->
-    <!--                class="el-menu-vertical-demo"-->
-    <!--                active-text-color="#FE9200"-->
-    <!--                @select="handleSelect"-->
-    <!--                :router="true"-->
-    <!--            >-->
-    <!--              <el-sub-menu index="/route">-->
-    <!--                <template #title>-->
-    <!--                  <el-icon>-->
-    <!--                    <Guide/>-->
-    <!--                  </el-icon>-->
-    <!--                  路由管理-->
-    <!--                </template>-->
-    <!--                <el-menu-item index="/route/list">路由配置</el-menu-item>-->
-    <!--              </el-sub-menu>-->
-    <!--              <el-sub-menu index="/dict">-->
-    <!--                <template #title>-->
-    <!--                  <el-icon>-->
-    <!--                    <Grid/>-->
-    <!--                  </el-icon>-->
-    <!--                  字典管理-->
-    <!--                </template>-->
-    <!--                <el-menu-item index="/dict/list">字典配置</el-menu-item>-->
-    <!--              </el-sub-menu>-->
-    <!--              <el-sub-menu index="/agent">-->
-    <!--                <template #title>-->
-    <!--                  <el-icon>-->
-    <!--                    <PieChart/>-->
-    <!--                  </el-icon>-->
-    <!--                  指标监控-->
-    <!--                </template>-->
-    <!--                <el-menu-item index="/agent/kafkaIn/appList">流控管理</el-menu-item>-->
-    <!--                <el-menu-item index="/monitor/quotaList">指标列表</el-menu-item>-->
-    <!--              </el-sub-menu>-->
-    <!--              <el-sub-menu index="/config">-->
-    <!--                <template #title>-->
-    <!--                  <el-icon>-->
-    <!--                    <PieChart/>-->
-    <!--                  </el-icon>-->
-    <!--                  配置中心-->
-    <!--                </template>-->
-    <!--                <el-menu-item index="/config/home">UI控制台</el-menu-item>-->
-    <!--              </el-sub-menu>-->
-    <!--              <el-sub-menu index="/open-ai">-->
-    <!--                <template #title>-->
-    <!--                  <el-icon><ChatDotRound /></el-icon>-->
-    <!--                  OpenAI-->
-    <!--                </template>-->
-    <!--                <el-menu-item index="/open-ai/chatgpt">Chat-GPT</el-menu-item>-->
-    <!--              </el-sub-menu>-->
-    <!--            </el-menu>-->
-    <!--          </el-scrollbar>-->
-    <!--        </el-aside>-->
-    <!--        <el-main>-->
-    <!--          <el-page-header @back="goBack">-->
-    <!--            <template #content>-->
-    <!--              <el-breadcrumb :separator-icon="ArrowRight" class="breadcrumb">-->
-    <!--                <el-breadcrumb-item v-for="(item,index) in router.currentRoute.value.meta.breadcrumb">{{item}}</el-breadcrumb-item>-->
-    <!--              </el-breadcrumb>-->
-    <!--            </template>-->
-    <!--          </el-page-header>-->
-    <!--          <div class="frame">-->
-    <!--            <router-view/>-->
-    <!--          </div>-->
-    <!--        </el-main>-->
-    <!--      </el-container>-->
-    <!--    </el-container>-->
     <router-view/>
   </div>
 </template>
@@ -104,8 +9,6 @@
 
   const activeIndex = ref('/route')
   const userInfo = ref('当前登录用户: admin')
-
-  // const breadcrumb = reactive<any>(router.currentRoute.value.meta.breadcrumb)
 
   const handleSelect = (key: string, keyPath: string[]) => {
 
@@ -117,69 +20,170 @@
 </script>
 
 <style lang="scss">
-  .frame {
-    padding: 5px 5px 10px 5px;
-    margin-top: 20px;
-  }
+.frame {
+  padding: 5px 5px 10px 5px;
+  margin-top: 20px;
+}
 
-  .breadcrumb {
-    margin-left: 5px;
-  }
+.breadcrumb {
+  margin-left: 5px;
+}
 
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    /*margin-top: 10px;*/
-    width: 200px;
-    min-height: 600px;
-  }
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 600px;
+}
 
-  .el-header {
-    --el-header-padding: 0 5px;
-    /*--el-header-height: 60px;*/
-    /*padding: var(--el-header-padding);*/
-    /*box-sizing: border-box;*/
-    /*flex-shrink: 0;*/
-    /*height: var(--el-header-height);*/
-  }
+.el-header {
+  --el-header-padding: 0 5px;
+}
 
-  .home_container {
-    height: 50em;
-  }
+.home_container {
+  height: 50em;
+}
 
-  .el-header {
-    background-color: #364040;
-    // 给头部设置一下弹性布局
+.el-header {
+  background-color: #364040;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  align-items: center;
+  color: #fff;
+  font-size: 20px;
+  > div {
     display: flex;
-    // 让它贴标左右对齐
-    justify-content: space-between;
-    // 清空图片左侧padding
-    padding-left: 0;
-    // 按钮居中
     align-items: center;
-    // 文本颜色
-    color: #fff;
-    // 设置文本字体大小
-    font-size: 20px;
-    // 嵌套
-    > div {
-      // 弹性布局
-      display: flex;
-      // 纵向上居中对齐
-      align-items: center;
-      margin-right: 10px;
-      // 给文本和图片添加间距，使用类选择器
-      span {
-        margin-left: 15px;
-      }
+    margin-right: 10px;
+    span {
+      margin-left: 15px;
     }
-
   }
+}
 
-  .el-aside {
-    margin-top: 15px;
-  }
+.el-aside {
+  margin-top: 15px;
+}
 
-  .el-main {
-    background-color: #f6f8fa;
-    --el-main-padding: 10px;
-  }
+.el-main {
+  background-color: #f6f8fa;
+  --el-main-padding: 10px;
+}
+</style>
+
+<style>
+/* ========================================
+   全局基础
+   ======================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #F1F5F9;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========================================
+   全局细滚动条 — 1px
+   ======================================== */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar { width: 1px; height: 1px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.80); }
+*::-webkit-scrollbar-corner { background: transparent; }
+
+/* ========================================
+   Element Plus 主题变量（浅色）
+   ======================================== */
+:root {
+  --el-color-primary: #4F46E5;
+  --el-color-primary-light-3: #818CF8;
+  --el-color-primary-light-5: #A5B4FC;
+  --el-color-primary-light-7: #C7D2FE;
+  --el-color-primary-light-8: #DDD6FE;
+  --el-color-primary-light-9: #EEF2FF;
+  --el-border-color: #E2E8F0;
+  --el-border-color-light: #E2E8F0;
+  --el-border-color-lighter: #F1F5F9;
+  --el-bg-color: #FFF;
+  --el-bg-color-page: #F1F5F9;
+  --el-border-radius-base: 8px;
+  --el-color-success: #059669;
+  --el-color-danger: #DC2626;
+  --el-color-warning: #D97706;
+}
+
+/* ========================================
+   暗黑模式 — 全局覆盖
+   ======================================== */
+html.dark body {
+  background: #0a0a0a;
+  color: #e5e7eb;
+}
+
+html.dark *::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.30);
+}
+
+html.dark {
+  --el-color-primary: #A5B4FC;
+  --el-color-primary-light-3: #818CF8;
+  --el-color-primary-light-5: #6366F1;
+  --el-color-primary-light-7: #4F46E5;
+  --el-color-primary-light-8: #4338CA;
+  --el-color-primary-light-9: #3730A3;
+  --el-color-white: #e5e7eb;
+  --el-color-black: #0a0a0a;
+  --el-color-info: #818CF8;
+  --el-border-color: #363738;
+  --el-border-color-light: #4a4b4d;
+  --el-border-color-lighter: #2a2b2d;
+  --el-bg-color: #1d1e1f;
+  --el-bg-color-page: #0a0a0a;
+  --el-text-color-primary: #e5e7eb;
+  --el-text-color-regular: #c8c9cc;
+  --el-text-color-secondary: #98999c;
+  --el-text-color-placeholder: #78797c;
+  --el-fill-color-blank: #1d1e1f;
+  --el-fill-color: #222324;
+  --el-fill-color-light: #2a2b2d;
+  --el-fill-color-lighter: #363738;
+  --el-color-success: #34D399;
+  --el-color-danger: #F87171;
+  --el-color-warning: #FBBF24;
+}
+
+/* ========================================
+   主题切换动画 — 圆心扩散/收缩
+   ======================================== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 浅→暗: old 向内收缩 */
+html.tx-shrink::view-transition-old(root) {
+  z-index: 9999;
+  animation: theme-clip 0.8s cubic-bezier(0.4, 0, 0.2, 1) reverse;
+}
+html.tx-shrink::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* 暗→浅: new 向外扩散 */
+html.tx-expand::view-transition-old(root) {
+  z-index: 1;
+}
+html.tx-expand::view-transition-new(root) {
+  z-index: 9999;
+  animation: theme-clip 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes theme-clip {
+  from { clip-path: circle(0px  at var(--tx-x, 50vw) var(--tx-y, 50vh)); }
+  to   { clip-path: circle(150vw at var(--tx-x, 50vw) var(--tx-y, 50vh)); }
+}
 </style>
