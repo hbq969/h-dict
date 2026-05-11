@@ -420,7 +420,7 @@ const _ = (window as any).ResizeObserver;
         <div class="drawer-section">
           <div class="drawer-section__title">{{langData.enumInfo}}</div>
           <div class="drawer-section__body">
-            <div v-if="dictInfo.dictSource==1" class="pairs-panel">
+            <div v-if="dictInfo.dictSource=='1'" class="pairs-panel">
               <div class="pairs-panel__header">
                 <span class="pairs-panel__count">{{ dictInfo.pairTotal }} 个枚举项</span>
                 <el-button :icon="Edit" size="small" text @click="showPairDialog" v-if="edit">{{langData.btnAdd}}</el-button>
@@ -458,7 +458,7 @@ const _ = (window as any).ResizeObserver;
                 />
               </div>
             </div>
-            <div v-else-if="dictInfo.dictSource==2">
+            <div v-else-if="dictInfo.dictSource=='2'">
               <el-form-item :label="langData.dbSql" :label-width="formLabelWidth" style="width: 100%">
                 <el-input
                   v-model="dictInfo.sqlContent"
