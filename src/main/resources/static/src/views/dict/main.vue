@@ -29,7 +29,7 @@ const dictInfo = reactive({
   pageSize: 5,
   dictName: '',
   dictDesc: '',
-  dictSource: '-1',
+  dictSource: '1',
   keyColumn: 'key',
   valColumn: 'value',
   sqlContent: '',
@@ -41,7 +41,6 @@ const dictInfo = reactive({
     this.disabled = false
     this.dictName = ''
     this.dictDesc = ''
-    this.dictSource = ''
     this.dictSource = '1'
     this.keyColumn = 'key'
     this.valColumn = 'value'
@@ -125,10 +124,9 @@ const showAddDictDialog = () => {
 const edit = ref(true)
 const showEditDictDialog = (scope: any) => {
   dialogFormVisible.value = true
-  dictInfo.disabled = true
   dictInfo.dictName = scope.row.dictName;
   dictInfo.dictDesc = scope.row.dictDesc;
-  dictInfo.dictSource = scope.row.dictSource + '';
+  dictInfo.dictSource = scope.row.dictSource+'';
   dictInfo.keyColumn = scope.row.keyColumn;
   dictInfo.valColumn = scope.row.valColumn;
   if (scope.row.dictSource == '1') {
@@ -140,6 +138,11 @@ const showEditDictDialog = (scope: any) => {
     edit.value = true
   } else {
     edit.value = false
+  }
+  if(edit.value){
+    dictInfo.disabled = false
+  }else{
+    dictInfo.disabled = true
   }
 }
 
@@ -393,32 +396,24 @@ const _ = (window as any).ResizeObserver;
             <el-form-item :label="langData.dictDesc" style="width: 100%">
               <el-input v-model="dictInfo.dictDesc" type="text"/>
             </el-form-item>
-            <el-row :gutter="12">
-              <el-col :span="12">
-                <el-form-item :label="langData.dictSource">
-                  <el-select v-model="dictInfo.dictSource" :disabled="dictInfo.disabled" style="width:100%">
-                    <el-option :label="langData.fixedSource" value="1"/>
-                    <el-option :label="langData.dbSource" value="2"/>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item :label="langData.keyWay" label-width="60px">
-                  <el-select v-model="dictInfo.keyColumn" style="width:100%">
-                    <el-option label="Key" value="key"/>
-                    <el-option label="Value" value="value"/>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item :label="langData.valueWay" label-width="70px">
-                  <el-select v-model="dictInfo.valColumn" style="width:100%">
-                    <el-option label="Key" value="key"/>
-                    <el-option label="Value" value="value"/>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <el-form-item :label="langData.dictSource">
+              <el-radio-group v-model="dictInfo.dictSource" :disabled="dictInfo.disabled">
+                <el-radio-button label="1">{{ langData.fixedSource }}</el-radio-button>
+                <el-radio-button label="2">{{ langData.dbSource }}</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item :label="langData.keyWay">
+              <el-radio-group v-model="dictInfo.keyColumn" :disabled="dictInfo.disabled">
+                <el-radio-button label="key">Key</el-radio-button>
+                <el-radio-button label="value">Value</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item :label="langData.valueWay">
+              <el-radio-group v-model="dictInfo.valColumn" :disabled="dictInfo.disabled">
+                <el-radio-button label="key">Key</el-radio-button>
+                <el-radio-button label="value">Value</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
           </div>
         </div>
 
