@@ -270,6 +270,24 @@ const delPair = (scope: any) => {
   })
 }
 
+const debounce = (callback: (...args: any[]) => void, delay: number) => {
+  let tid: any;
+  return function (...args: any[]) {
+    const ctx = window;
+    tid && clearTimeout(tid);
+    tid = setTimeout(() => {
+      callback.apply(ctx, args);
+    }, delay);
+  };
+};
+
+const _ = (window as any).ResizeObserver;
+(window as any).ResizeObserver = class ResizeObserver extends _ {
+  constructor(callback: (...args: any[]) => void) {
+    callback = debounce(callback, 20);
+    super(callback);
+  }
+};
 
 </script>
 
@@ -531,8 +549,8 @@ const delPair = (scope: any) => {
   border-bottom: none;
 }
 
-.toolbar :deep(.el-form-item) {
-  margin-bottom: 0;
+.toolbar :deep(.el-form--inline) {
+  row-gap: 8px;
 }
 
 .toolbar :deep(.el-form-item__label) {
