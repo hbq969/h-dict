@@ -9,6 +9,7 @@ import com.github.hbq969.code.common.spring.i18n.LangInfo;
 import com.github.hbq969.code.common.spring.i18n.LanguageEvent;
 import com.github.hbq969.code.common.utils.GsonUtils;
 import com.github.hbq969.code.common.utils.InitScriptUtils;
+import com.github.hbq969.code.common.utils.ThrowUtils;
 import com.github.hbq969.code.dict.config.DictConf;
 import com.github.hbq969.code.dict.dao.DictDao;
 import com.github.hbq969.code.dict.event.DictChangeEvent;
@@ -311,38 +312,10 @@ public class MapDictHelperImpl extends AbstractScriptInitialAware implements Dic
 
     @Override
     protected void tableCreate0() {
-        try {
-            this.dictDao.createDictBase();
-            log.debug("h_dict_base创建成功");
-        } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.debug("h_dict_base已存在");
-            }
-        }
-        try {
-            this.dictDao.createDictPairs();
-            log.debug("h_dict_pairs创建成功");
-        } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.debug("h_dict_pairs已存在");
-            }
-        }
-        try {
-            this.dictDao.createDictSql();
-            log.debug("h_dict_sql创建成功");
-        } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.debug("h_dict_sql已存在");
-            }
-        }
-        try {
-            this.dictDao.createDictSqlCounty();
-            log.debug("h_dict_sql_county创建成功");
-        } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.debug("h_dict_sql_county已存在");
-            }
-        }
+        ThrowUtils.runWithCreateTab(() -> this.dictDao.createDictBase(), "h_dict_base");
+        ThrowUtils.runWithCreateTab(() -> this.dictDao.createDictPairs(), "h_dict_pairs");
+        ThrowUtils.runWithCreateTab(() -> this.dictDao.createDictSql(), "h_dict_sql");
+        ThrowUtils.runWithCreateTab(() -> this.dictDao.createDictSqlCounty(), "h_dict_sql_county");
     }
 
     @Override
