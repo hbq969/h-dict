@@ -17,3 +17,5 @@ graphify-out
 .claude
 graphify-out
 .mcp-class-index.json
+.codegraph
+.cursor
