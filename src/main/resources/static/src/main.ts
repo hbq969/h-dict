@@ -12,6 +12,11 @@ import { createPinia } from 'pinia'
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import { addCollection } from '@iconify/vue'
+import lucide from '@iconify-json/lucide/icons.json'
+
+// 离线注册 Iconify 图标集（lucide），运行时不请求图标服务
+addCollection(lucide)
 
 const app = createApp(App)
 

@@ -12,6 +12,8 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@iconify-json/lucide": "^1.2.147",
+    "@iconify/vue": "^5.0.4",
     "axios": "^1.13.2",
     "echarts": "^5.4.1",
     "element-plus": "^2.9.7",
