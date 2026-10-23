@@ -49,7 +49,7 @@
   padding-left: 0;
   align-items: center;
   color: #fff;
-  font-size: 20px;
+  font-size: var(--el-font-size-extra-large);
   > div {
     display: flex;
     align-items: center;

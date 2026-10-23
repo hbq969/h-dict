@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {Edit} from '@element-plus/icons-vue'
+import {IcEdit} from '@/utils/icons'
 import {onMounted, reactive, ref} from 'vue'
 import axios from '@/network/index'
 import {msg} from '@/utils/Utils'
@@ -299,7 +299,7 @@ const _ = (window as any).ResizeObserver;
 
     <!-- 工具栏 -->
     <div class="toolbar">
-      <el-form :inline="true" size="small">
+      <el-form :inline="true">
         <el-form-item :label="langData.dictAppName" prop="app">
           <el-input v-model="form.app" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts" style="width:140px"/>
         </el-form-item>
@@ -324,7 +324,7 @@ const _ = (window as any).ResizeObserver;
 
       <div class="toolbar__actions">
         <span class="toolbar__count">{{ data.total }} 条记录</span>
-        <el-button type="success" :icon="Edit" circle size="small" @click="showAddDictDialog()" :title="langData.addDictTitle"/>
+        <el-button type="success" :icon="IcEdit" circle @click="showAddDictDialog()" :title="langData.addDictTitle"/>
       </div>
     </div>
 
@@ -335,21 +335,20 @@ const _ = (window as any).ResizeObserver;
         style="width: 100%"
         table-layout="fixed"
         :stripe="false"
-        size="small"
         :highlight-current-row="true"
         row-class-name="dict-row"
       >
         <el-table-column fixed="left" :label="langData.tableHeaderOp" width="110" header-align="center" align="center">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="showEditDictDialog(scope)" v-if="scope.row.app==data.app">
+            <el-button link type="primary" @click="showEditDictDialog(scope)" v-if="scope.row.app==data.app">
               {{langData.btnEdit}}
             </el-button>
-            <el-button link type="primary" size="small" @click="showEditDictDialog(scope)" v-else>
+            <el-button link type="primary" @click="showEditDictDialog(scope)" v-else>
               {{langData.btnDetail}}
             </el-button>
             <el-popconfirm :title="langData.confirmDelete" @confirm="delDict(scope)" icon-color="red" confirm-button-type="danger">
               <template #reference>
-                <el-button link type="danger" size="small" v-if="scope.row.app==data.app">{{langData.btnDelete}}</el-button>
+                <el-button link type="danger" v-if="scope.row.app==data.app">{{langData.btnDelete}}</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -386,7 +385,7 @@ const _ = (window as any).ResizeObserver;
       size="620px"
       custom-class="dict-drawer"
     >
-      <el-form :model="dictInfo" :label-width="formLabelWidth" label-position="right" size="small">
+      <el-form :model="dictInfo" :label-width="formLabelWidth" label-position="right">
         <div class="drawer-section">
           <div class="drawer-section__title">{{langData.baseInfo}}</div>
           <div class="drawer-section__body">
@@ -423,13 +422,12 @@ const _ = (window as any).ResizeObserver;
             <div v-if="dictInfo.dictSource=='1'" class="pairs-panel">
               <div class="pairs-panel__header">
                 <span class="pairs-panel__count">{{ dictInfo.pairTotal }} 个枚举项</span>
-                <el-button :icon="Edit" size="small" text @click="showPairDialog" v-if="edit">{{langData.btnAdd}}</el-button>
+                <el-button :icon="IcEdit" text @click="showPairDialog" v-if="edit">{{langData.btnAdd}}</el-button>
               </div>
               <el-table
                 :data="dictInfo.pairs"
                 style="width: 100%"
                 :stripe="false"
-                size="small"
                 :highlight-current-row="true"
                 row-class-name="pair-row"
               >
@@ -437,7 +435,7 @@ const _ = (window as any).ResizeObserver;
                   <template #default="scope">
                     <el-popconfirm :title="langData.confirmDelete" @confirm="delPair(scope)" icon-color="red" confirm-button-type="danger">
                       <template #reference>
-                        <el-button link type="danger" size="small" v-if="edit">{{langData.btnDelete}}</el-button>
+                        <el-button link type="danger" v-if="edit">{{langData.btnDelete}}</el-button>
                       </template>
                     </el-popconfirm>
                   </template>
@@ -482,9 +480,9 @@ const _ = (window as any).ResizeObserver;
 
     <!-- 添加枚举项对话框 -->
     <el-dialog v-model="dialogPairFormVisible" :title="langData.addEnum" width="480px" custom-class="pair-dialog">
-      <el-form :model="pairInfo" label-position="top" size="small">
+      <el-form :model="pairInfo" label-position="top">
         <el-form-item :label="langData.addWay">
-          <el-select v-model="pairInfo.pairAddWay" :placeholder="langData.formSelectPlaceholder" size="small" style="width:100%">
+          <el-select v-model="pairInfo.pairAddWay" :placeholder="langData.formSelectPlaceholder" style="width:100%">
             <el-option :label="w.label" :value="w.key" v-for="w in pairAddWays"/>
           </el-select>
         </el-form-item>
@@ -550,7 +548,7 @@ const _ = (window as any).ResizeObserver;
 
 .toolbar :deep(.el-form-item__label) {
   font-weight: 500;
-  font-size: 12px;
+  font-size: var(--el-font-size-extra-small);
   color: var(--el-text-color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -565,7 +563,7 @@ const _ = (window as any).ResizeObserver;
 }
 
 .toolbar__count {
-  font-size: 12px;
+  font-size: var(--el-font-size-extra-small);
   color: var(--el-text-color-placeholder);
   font-family: 'Menlo', 'SF Mono', 'Cascadia Code', monospace;
   white-space: nowrap;
@@ -590,7 +588,7 @@ const _ = (window as any).ResizeObserver;
 .table-card :deep(.el-table th.el-table__cell) {
   background: var(--el-fill-color-light);
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--el-font-size-extra-small);
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--el-text-color-secondary);
@@ -634,7 +632,7 @@ const _ = (window as any).ResizeObserver;
 }
 
 .drawer-section__title {
-  font-size: 11px;
+  font-size: var(--el-font-size-extra-small);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -671,7 +669,7 @@ const _ = (window as any).ResizeObserver;
 }
 
 .pairs-panel__count {
-  font-size: 12px;
+  font-size: var(--el-font-size-extra-small);
   color: var(--el-text-color-secondary);
   font-family: 'Menlo', 'SF Mono', 'Cascadia Code', monospace;
 }
@@ -683,7 +681,7 @@ const _ = (window as any).ResizeObserver;
 .pairs-panel :deep(.el-table th.el-table__cell) {
   background: transparent;
   font-weight: 600;
-  font-size: 11px;
+  font-size: var(--el-font-size-extra-small);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--el-text-color-secondary);
@@ -709,7 +707,7 @@ const _ = (window as any).ResizeObserver;
 
 .pair-dialog :deep(.el-form-item__label) {
   font-weight: 500;
-  font-size: 12px;
+  font-size: var(--el-font-size-extra-small);
   color: var(--el-text-color-secondary);
 }
 
