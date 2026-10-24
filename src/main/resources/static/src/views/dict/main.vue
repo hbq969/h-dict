@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import {IcEdit} from '@/utils/icons'
+import {IcEdit, IcView, IcDelete, IcPlus, IcSearch, IcRefresh, IcFilter, IcMaximize, IcMinimize, IcReset} from '@/utils/icons'
 import {onMounted, reactive, ref} from 'vue'
 import axios from '@/network/index'
+import {ElMessageBox} from 'element-plus'
 import {msg} from '@/utils/Utils'
 import {getLangData} from "@/i18n/locale";
 
@@ -22,11 +23,38 @@ const data = reactive({
   total: 0
 });
 
+const filtersVisible = ref(true)
+const drawerFull = ref(false)
+const loading = ref(false)
+const filterCount = () => [form.app, form.dictName, form.dictDesc, form.dictSource !== '-1' ? form.dictSource : '']
+    .filter(v => v !== '' && v !== null && v !== undefined).length
+const resetQuery = () => {
+  form.app = ''
+  form.dictName = ''
+  form.dictDesc = ''
+  form.dictSource = '-1'
+  form.pageNum = 1
+  queryDicts()
+}
+const confirmDelDict = (scope: any) => {
+  ElMessageBox.confirm(langData.confirmDelete, langData.msgBoxTitle, {
+    confirmButtonText: langData.btnConfirm,
+    cancelButtonText: langData.btnCancel,
+    type: 'warning'
+  }).then(() => delDict(scope)).catch(() => {})
+}
+const confirmDelPair = (scope: any) => {
+  ElMessageBox.confirm(langData.confirmDelete, langData.msgBoxTitle, {
+    confirmButtonText: langData.btnConfirm,
+    cancelButtonText: langData.btnCancel,
+    type: 'warning'
+  }).then(() => delPair(scope)).catch(() => {})
+}
 const formLabelWidth = ref('140px')
 const dictInfo = reactive({
   disabled: true,
   pageNum: 1,
-  pageSize: 5,
+  pageSize: 10,
   dictName: '',
   dictDesc: '',
   dictSource: '1',
@@ -48,7 +76,7 @@ const dictInfo = reactive({
     this.pairs = []
     this.pairTotal = 0
     this.pairPageNum = 1
-    this.pairPageSize = 5
+    this.pairPageSize = 10
   },
   valid: function () {
     return (this.dictSource == '1' && this.dictName != '' && this.dictDesc != '')
@@ -58,6 +86,7 @@ const dictInfo = reactive({
 
 // 查询字典列表
 const queryDicts = () => {
+  loading.value = true
   axios({
     url: '/queryDicts',
     method: 'post',
@@ -67,11 +96,14 @@ const queryDicts = () => {
       data.dictList = res.data.body.pageInfo.list
       data.total = res.data.body.pageInfo.total;
       data.app = res.data.body.curApp;
+      loading.value = false
     }else{
       let content = res.config.baseURL+res.config.url+': '+res.data.errorMessage;
       msg(content, "warning")
+      loading.value = false
     }
   }).catch((err: Error) => {
+    loading.value = false
     msg(langData.axiosRequestErr, 'error')
   })
 }
@@ -297,40 +329,69 @@ const _ = (window as any).ResizeObserver;
 <template>
   <div class="dict-console">
 
-    <!-- 工具栏 -->
-    <div class="toolbar">
-      <el-form :inline="true">
+    <!-- 页头 -->
+    <header class="page-header">
+      <div class="page-head-left">
+        <span class="page-title-sm">{{ langData.dictPageTitle }}</span>
+      </div>
+      <span class="page-count">{{ data.total }} 条记录</span>
+    </header>
+
+    <!-- 查询条件区 -->
+    <div class="query-panel" v-show="filtersVisible">
+      <el-form :inline="true" :model="form">
         <el-form-item :label="langData.dictAppName" prop="app">
-          <el-input v-model="form.app" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts" style="width:140px"/>
+          <el-input v-model="form.app" :placeholder="langData.formInputPlaceholder" clearable @keyup.enter="queryDicts"/>
         </el-form-item>
         <el-form-item :label="langData.dictName" prop="dictName">
-          <el-input v-model="form.dictName" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts" style="width:140px"/>
+          <el-input v-model="form.dictName" :placeholder="langData.formInputPlaceholder" clearable @keyup.enter="queryDicts"/>
         </el-form-item>
         <el-form-item :label="langData.dictDesc" prop="dictDesc">
-          <el-input v-model="form.dictDesc" :placeholder="langData.formInputPlaceholder" @keyup.enter="queryDicts" style="width:140px"/>
+          <el-input v-model="form.dictDesc" :placeholder="langData.formInputPlaceholder" clearable @keyup.enter="queryDicts"/>
         </el-form-item>
         <el-form-item :label="langData.dictSource" prop="dictSource">
-          <el-select v-model="form.dictSource" @change="queryDicts" style="width:110px">
+          <el-select v-model="form.dictSource">
             <el-option :label="langData.formSelectPlaceholder" value="-1"/>
             <el-option :label="langData.fixedSource" value="1"/>
             <el-option :label="langData.dbSource" value="2"/>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="queryDicts">{{langData.btnSearch}}</el-button>
-          <el-button type="warning" @click="reloadDict" :dark="false">{{langData.reloadDictData}}</el-button>
+          <el-button type="primary" :icon="IcSearch" @click="queryDicts">{{langData.btnSearch}}</el-button>
+          <el-button :icon="IcReset" @click="resetQuery">{{langData.btnReset}}</el-button>
         </el-form-item>
       </el-form>
+    </div>
 
-      <div class="toolbar__actions">
-        <span class="toolbar__count">{{ data.total }} 条记录</span>
-        <el-button type="success" :icon="IcEdit" circle @click="showAddDictDialog()" :title="langData.addDictTitle"/>
+    <!-- 工具栏（纯图标） -->
+    <div class="list-toolbar">
+      <div class="tb-left">
+        <el-tooltip :content="langData.addDictTitle" :show-after="1000" placement="bottom">
+          <el-button type="primary" circle :icon="IcPlus" @click="showAddDictDialog()"/>
+        </el-tooltip>
+        <span class="tb-sep"></span>
+        <el-tooltip :content="filtersVisible ? langData.filterHide : langData.filterShow" :show-after="1000" placement="bottom">
+          <el-button class="filter-toggle" :class="{'on': filtersVisible}" circle text :icon="IcFilter" @click="filtersVisible = !filtersVisible"/>
+        </el-tooltip>
+        <span class="tb-sep"></span>
+        <el-tooltip :content="langData.reloadDictData" :show-after="1000" placement="bottom">
+          <el-button circle text :icon="IcRefresh" @click="reloadDict"/>
+        </el-tooltip>
       </div>
+    </div>
+
+    <!-- 摘要栏：只放筛选状态 -->
+    <div class="sum-bar" v-if="!filtersVisible && filterCount() > 0">
+      <span class="seg">
+        <el-icon class="seg-ic"><IcFilter/></el-icon>{{ langData.filteredPrefix }} {{ filterCount() }} {{ langData.filteredSuffix }}
+        <span class="lnk" @click="filtersVisible = true">{{ langData.filterExpand }}</span>
+      </span>
     </div>
 
     <!-- 主数据表格 -->
     <div class="table-card">
       <el-table
+        v-loading="loading"
         :data="data.dictList"
         style="width: 100%"
         table-layout="fixed"
@@ -338,19 +399,22 @@ const _ = (window as any).ResizeObserver;
         :highlight-current-row="true"
         row-class-name="dict-row"
       >
-        <el-table-column fixed="left" :label="langData.tableHeaderOp" width="110" header-align="center" align="center">
+        <template #empty>
+          <el-empty :description="filterCount() > 0 ? langData.emptyNoMatch : langData.emptyNoData" :image-size="70"/>
+        </template>
+        <el-table-column fixed="left" :label="langData.tableHeaderOp" width="100" header-align="center" align="center">
           <template #default="scope">
-            <el-button link type="primary" @click="showEditDictDialog(scope)" v-if="scope.row.app==data.app">
-              {{langData.btnEdit}}
-            </el-button>
-            <el-button link type="primary" @click="showEditDictDialog(scope)" v-else>
-              {{langData.btnDetail}}
-            </el-button>
-            <el-popconfirm :title="langData.confirmDelete" @confirm="delDict(scope)" icon-color="red" confirm-button-type="danger">
-              <template #reference>
-                <el-button link type="danger" v-if="scope.row.app==data.app">{{langData.btnDelete}}</el-button>
-              </template>
-            </el-popconfirm>
+            <div class="table-actions">
+              <el-tooltip :content="scope.row.app==data.app ? langData.btnEdit : langData.btnDetail" :show-after="1000" placement="top">
+                <el-icon class="action-icon action-edit" @click="showEditDictDialog(scope)">
+                  <IcEdit v-if="scope.row.app==data.app"/>
+                  <IcView v-else/>
+                </el-icon>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.app==data.app" :content="langData.btnDelete" :show-after="1000" placement="top">
+                <el-icon class="action-icon action-delete" @click="confirmDelDict(scope)"><IcDelete/></el-icon>
+              </el-tooltip>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="dictName" :label="langData.dictName" width="250" :show-overflow-tooltip="true" header-align="center" align="left"/>
@@ -371,8 +435,8 @@ const _ = (window as any).ResizeObserver;
           v-model:total="data.total"
           @size-change="queryDicts"
           @current-change="queryDicts" @prev-click="queryDicts" @next-click="queryDicts"
-          :small="true" :background="true"
-          :page-sizes="[5, 10, 20, 50, 100]"
+          :background="true"
+          :page-sizes="[10, 20, 50, 100]"
         />
       </div>
     </div>
@@ -380,12 +444,19 @@ const _ = (window as any).ResizeObserver;
     <!-- 编辑/新建字典抽屉 -->
     <el-drawer
       v-model="dialogFormVisible"
-      :title="edit ? (dictInfo.disabled ? langData.editProperty : langData.addDictTitle) : langData.btnDetail"
       direction="rtl"
-      size="620px"
+      :size="drawerFull ? '100%' : '620px'"
       custom-class="dict-drawer"
     >
-      <el-form :model="dictInfo" :label-width="formLabelWidth" label-position="right">
+      <template #header>
+        <div class="drawer-head">
+          <span class="drawer-head__title">{{ edit ? (dictInfo.disabled ? langData.editProperty : langData.addDictTitle) : langData.btnDetail }}</span>
+          <el-tooltip :content="drawerFull ? langData.drawerRestore : langData.drawerMaximize" :show-after="1000" placement="bottom">
+            <el-button link :icon="drawerFull ? IcMinimize : IcMaximize" @click="drawerFull = !drawerFull"/>
+          </el-tooltip>
+        </div>
+      </template>
+      <el-form class="drawer-form-width" :model="dictInfo" :label-width="formLabelWidth" label-position="right">
         <div class="drawer-section">
           <div class="drawer-section__title">{{langData.baseInfo}}</div>
           <div class="drawer-section__body">
@@ -422,7 +493,9 @@ const _ = (window as any).ResizeObserver;
             <div v-if="dictInfo.dictSource=='1'" class="pairs-panel">
               <div class="pairs-panel__header">
                 <span class="pairs-panel__count">{{ dictInfo.pairTotal }} 个枚举项</span>
-                <el-button :icon="IcEdit" text @click="showPairDialog" v-if="edit">{{langData.btnAdd}}</el-button>
+                <el-tooltip :content="langData.btnAdd" :show-after="1000" placement="bottom" v-if="edit">
+                  <el-button circle text :icon="IcPlus" @click="showPairDialog"/>
+                </el-tooltip>
               </div>
               <el-table
                 :data="dictInfo.pairs"
@@ -431,13 +504,13 @@ const _ = (window as any).ResizeObserver;
                 :highlight-current-row="true"
                 row-class-name="pair-row"
               >
-                <el-table-column fixed="left" :label="langData.tableHeaderOp" width="160" header-align="center" align="center">
+                <el-table-column fixed="left" :label="langData.tableHeaderOp" width="80" header-align="center" align="center">
                   <template #default="scope">
-                    <el-popconfirm :title="langData.confirmDelete" @confirm="delPair(scope)" icon-color="red" confirm-button-type="danger">
-                      <template #reference>
-                        <el-button link type="danger" v-if="edit">{{langData.btnDelete}}</el-button>
-                      </template>
-                    </el-popconfirm>
+                    <div class="table-actions" v-if="edit">
+                      <el-tooltip :content="langData.btnDelete" :show-after="1000" placement="top">
+                        <el-icon class="action-icon action-delete" @click="confirmDelPair(scope)"><IcDelete/></el-icon>
+                      </el-tooltip>
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="key" :label="langData.key" :show-overflow-tooltip="true" header-align="center" align="center"/>
@@ -451,8 +524,8 @@ const _ = (window as any).ResizeObserver;
                   v-model:total="dictInfo.pairTotal"
                   @size-change="queryPairs"
                   @current-change="queryPairs" @prev-click="queryPairs" @next-click="queryPairs"
-                  :small="true" :background="true"
-                  :page-sizes="[5,10,20,50,100]"
+                  :background="true"
+                  :page-sizes="[10,20,50,100]"
                 />
               </div>
             </div>
@@ -526,47 +599,161 @@ const _ = (window as any).ResizeObserver;
   display: flex;
   flex-direction: column;
   gap: 0;
-  height: 100%;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
   padding: 16px 20px;
 }
 
-/* ---- 工具栏 ---- */
-.toolbar {
+/* ---- 页头（§7.6） ---- */
+.page-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 0 0 12px;
+}
+
+.page-head-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.page-title-sm {
+  font-size: var(--el-font-size-medium);
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.page-count {
+  font-size: var(--el-font-size-extra-small);
+  color: var(--el-text-color-placeholder);
+  white-space: nowrap;
+}
+
+/* ---- 查询条件区（§7.7） ---- */
+.query-panel {
   background: var(--el-bg-color);
   border: 1px solid var(--el-border-color-lighter);
   border-radius: 10px 10px 0 0;
   border-bottom: none;
+  padding: 12px 16px 2px;
 }
 
-.toolbar :deep(.el-form--inline) {
+.query-panel :deep(.el-form--inline) {
   row-gap: 8px;
 }
 
-.toolbar :deep(.el-form-item__label) {
+.query-panel :deep(.el-form-item__label) {
   font-weight: 500;
   font-size: var(--el-font-size-extra-small);
   color: var(--el-text-color-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
-.toolbar__actions {
+.query-panel :deep(.el-input) {
+  width: 180px;
+}
+
+.query-panel :deep(.el-select) {
+  width: 150px;
+}
+
+/* ---- 工具栏（纯图标，§7.7） ---- */
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-lighter);
+  border-top: none;
+  border-bottom: none;
+}
+
+.tb-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tb-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--el-border-color);
+  margin: 0 2px;
+}
+
+.filter-toggle.on {
+  color: var(--el-color-primary) !important;
+  background: var(--el-color-primary-light-9) !important;
+}
+
+/* ---- 摘要栏（§7.7） ---- */
+.sum-bar {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;
-  padding-top: 2px;
+  margin: 0 16px 8px;
+  padding: 6px 10px;
+  font-size: var(--el-font-size-extra-small);
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
+  border: 1px solid var(--el-color-primary-light-8);
+  border-radius: 6px;
 }
 
-.toolbar__count {
-  font-size: var(--el-font-size-extra-small);
-  color: var(--el-text-color-placeholder);
-  font-family: 'Menlo', 'SF Mono', 'Cascadia Code', monospace;
-  white-space: nowrap;
+.sum-bar .seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sum-bar .seg-ic {
+  font-size: 1em;
+}
+
+.sum-bar .lnk {
+  cursor: pointer;
+}
+
+.sum-bar .lnk:hover {
+  text-decoration: underline;
+}
+
+/* ---- 表格操作列（纯图标，§7.5） ---- */
+.table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-icon {
+  font-size: 1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.9em;
+  min-height: 1.9em;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--el-text-color-regular);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.action-icon:hover {
+  color: var(--el-color-primary);
+  background: var(--el-fill-color-light);
+}
+
+.action-delete:hover {
+  color: var(--el-color-danger);
+  background: var(--el-color-danger-light-9);
 }
 
 /* ---- 表格卡片 ---- */
@@ -576,6 +763,7 @@ const _ = (window as any).ResizeObserver;
   border-radius: 0 0 10px 10px;
   overflow: hidden;
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -613,6 +801,24 @@ const _ = (window as any).ResizeObserver;
   padding: 8px 16px;
   border-top: 1px solid var(--el-border-color-lighter);
   background: var(--el-fill-color-lighter);
+}
+
+/* ---- 抽屉头部：标题 + 最大化切换（§7.1） ---- */
+.drawer-form-width {
+  max-width: 760px;
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.drawer-head__title {
+  font-size: var(--el-font-size-medium);
+  font-weight: 600;
 }
 
 /* ---- 抽屉 ---- */

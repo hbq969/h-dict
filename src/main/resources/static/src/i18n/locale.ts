@@ -55,7 +55,18 @@ const locale: any = {
         "dbSqlPlaceHolder":"请输入枚举值查询的sql，注意一定要带上key、value固定别名，比如 select c_key AS \"key\",c_name AS \"value\" from h_dict_sql_county",
         "addEnum": "添加枚举",
         "addWay":"添加方式",
-        "batchEnum":"批量枚举"
+        "batchEnum":"批量枚举",
+        "dictPageTitle":"字典管理",
+        "btnReset":"重置",
+        "filterShow":"展开查询条件",
+        "filterHide":"收起查询条件",
+        "filteredPrefix":"已筛选",
+        "filteredSuffix":"个条件",
+        "filterExpand":"展开",
+        "emptyNoData":"暂无数据",
+        "emptyNoMatch":"没有匹配的记录，清空查询条件后重试",
+        "drawerMaximize":"最大化",
+        "drawerRestore":"还原"
     },
     'en-US': {
         "axiosRequestCallKey": "Call",
@@ -113,7 +124,18 @@ const locale: any = {
         "dbSqlPlaceHolder":"Please enter the sql for enumeration value query. Please note that you must bring the key and value fixed aliases, such as select c_key AS \"key\",c_name AS \"value\" from h_dict_sql_county",
         "addEnum": "Add Enum",
         "addWay":"Add Way",
-        "batchEnum":"Batch Enum"
+        "batchEnum":"Batch Enum",
+        "dictPageTitle":"Dictionary Management",
+        "btnReset":"Reset",
+        "filterShow":"Expand filters",
+        "filterHide":"Collapse filters",
+        "filteredPrefix":"Filtered",
+        "filteredSuffix":"conditions",
+        "filterExpand":"Expand",
+        "emptyNoData":"No data",
+        "emptyNoMatch":"No matching records. Clear the filters and try again.",
+        "drawerMaximize":"Maximize",
+        "drawerRestore":"Restore"
     },
     'ja-JP': {
         "axiosRequestCallKey": "電話",
@@ -171,7 +193,18 @@ const locale: any = {
         "dbSqlPlaceHolder":"列挙値クエリの SQL を入力してください。キーと値の固定エイリアスを含める必要があることに注意してください (例: select c_key AS \"key\",c_name AS \"value\" from h_dict_sql_county)。",
         "addEnum": "列挙を追加する",
         "addWay":"ウェイを追加",
-        "batchEnum": "バッチ列挙"
+        "batchEnum": "バッチ列挙",
+        "dictPageTitle":"辞書管理",
+        "btnReset":"リセット",
+        "filterShow":"フィルターを展開",
+        "filterHide":"フィルターを折りたたむ",
+        "filteredPrefix":"絞り込み",
+        "filteredSuffix":"件の条件",
+        "filterExpand":"展開",
+        "emptyNoData":"データがありません",
+        "emptyNoMatch":"一致するレコードがありません。条件をクリアして再試行してください。",
+        "drawerMaximize":"最大化",
+        "drawerRestore":"元に戻す"
     }
 }
 
