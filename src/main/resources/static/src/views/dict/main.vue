@@ -697,8 +697,8 @@ const _ = (window as any).ResizeObserver;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 16px 8px;
-  padding: 6px 10px;
+  margin: 0 0 8px;
+  padding: 6px 17px;
   font-size: var(--el-font-size-extra-small);
   color: var(--el-color-primary);
   background: var(--el-color-primary-light-9);
@@ -774,6 +774,7 @@ const _ = (window as any).ResizeObserver;
 }
 
 .table-card :deep(.el-table th.el-table__cell) {
+  white-space: nowrap;
   background: var(--el-fill-color-light);
   font-weight: 600;
   font-size: var(--el-font-size-extra-small);
