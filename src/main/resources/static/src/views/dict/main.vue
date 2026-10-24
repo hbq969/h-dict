@@ -604,7 +604,7 @@ const _ = (window as any).ResizeObserver;
   overflow: hidden;
   box-sizing: border-box;
   margin: 0;
-  padding: var(--sm-page-pad, 16px);
+  padding: var(--sm-page-pad-top, 18px) var(--sm-page-pad, 16px) var(--sm-page-pad, 16px);
 }
 
 /* ---- 页头（§7.6） ---- */
