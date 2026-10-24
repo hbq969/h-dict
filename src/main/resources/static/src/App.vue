@@ -68,6 +68,12 @@
   background-color: #f6f8fa;
   --el-main-padding: 10px;
 }
+
+/* 图标规范 §7.5：行内图标 0.9em；圆形按钮被门户字号主题压方，这里强制正圆 */
+.el-button .el-icon { font-size: 0.9em; }
+.el-button.is-circle,
+.el-button.is-circle:hover,
+.el-button.is-circle:focus { border-radius: 50% !important; }
 </style>
 
 <style>

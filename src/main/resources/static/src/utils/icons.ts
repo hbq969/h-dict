@@ -24,3 +24,8 @@ export const IcMore = make('ellipsis')
 export const IcCopy = make('copy')
 export const IcWarning = make('triangle-alert')
 export const IcInfo = make('info')
+
+export const IcFilter = make('filter')
+export const IcMaximize = make('maximize')
+export const IcMinimize = make('minimize')
+export const IcReset = make('rotate-ccw')
