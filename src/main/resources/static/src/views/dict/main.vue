@@ -603,7 +603,8 @@ const _ = (window as any).ResizeObserver;
   max-height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 16px 20px;
+  margin: 0;
+  padding: var(--sm-page-pad, 16px);
 }
 
 /* ---- 页头（§7.6） ---- */
